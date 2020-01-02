@@ -32,6 +32,10 @@ import (
 )
 
 var cfgFile string
+var Pubpkg string
+var Pubart string
+var PublicKey, PrivateKey, PkiPassphrase string
+var PkgFormat, PkgPassword string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -55,16 +59,7 @@ func Execute() {
 
 func init() {
 	cobra.OnInitialize(initConfig)
-
-	// Here you will define your flags and configuration settings.
-	// Cobra supports persistent flags, which, if defined here,
-	// will be global for your application.
-
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.spm.yaml)")
-
-	// Cobra also supports local flags, which will only run
-	// when this action is called directly.
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -90,5 +85,22 @@ func initConfig() {
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
 		fmt.Println("Using config file:", viper.ConfigFileUsed())
+		Pubpkg = viper.GetString("pubpkg")
+		Pubart = viper.GetString("pubart")
+		fmt.Printf("Pkg publish url=%s Artifacts=%s\n", Pubpkg, Pubart)
+		PublicKey = viper.GetString("security.publickey")
+		PrivateKey = viper.GetString("security.privatekey")
+		PkgFormat = viper.GetString("package.format")
+		viper.SetEnvPrefix("spm")
+		viper.BindEnv("pkipassphrase")
+		viper.BindEnv("pkgpassword")
+		PkgPassword = viper.GetString("pkgpassword")
+		PkiPassphrase = viper.GetString("pkipassphrase")
+
+		fmt.Printf("PKI passphrase %s Pkg Password %s\n", PkiPassphrase, PkgPassword)
+
+	} else {
+		fmt.Println(err)
+		os.Exit(1)
 	}
 }

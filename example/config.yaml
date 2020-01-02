@@ -1,0 +1,19 @@
+#-----------------------------------------------------------------------
+#     This is an example configuration file systemwide for spm.
+#     Typical location $HOME/.spm.yaml
+#     can be overridden with the --config flag
+#-----------------------------------------------------------------------
+#     Environment Variables
+#     SPM_PKIPASSPHRASE - the passphrase of the private key of
+#                         the key files
+#     SPM_PKGPASSWORD   - the password for the encrytion of the spm file
+#-----------------------------------------------------------------------
+pubpkg: https://drive.google.com/
+pubart: https://drive.aws.com/
+
+security:
+    publickey: ~/.ssh/id_rsa.pub 
+    privatekey: ~/.ssh/id_rsa
+
+package:
+    format: tgz

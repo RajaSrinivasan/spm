@@ -2,16 +2,9 @@
 package:
     name: ServicePack
     version: 1.2
-    pkgpub: https://google.com/publish/
-    sigpub: https://amazon.com/signatures/
     created: creation_date
     hostname: created_on_hostname
     id: unique id for this package
-    
-security:
-    publickey: ~/.ssh/id_rsa.pub 
-    privatekey: ~/.ssh/id_rsa
-    passphrase: $(PASSWD)
 
 contents: [
       '../test/date1from1' , '/var/lib/to1' ,
