@@ -11,6 +11,7 @@ var showCmd = &cobra.Command{
 	Use:   "show",
 	Short: "Display the contantes of the package",
 	Long:  `Unpack the contents of the package, verify and list details about the package`,
+	Args:  cobra.MinimumNArgs(1),
 	Run:   show,
 }
 
@@ -19,5 +20,5 @@ func init() {
 }
 
 func show(cmd *cobra.Command, args []string) {
-	fmt.Println("show called")
+	fmt.Printf("show called %s\n", args[0])
 }

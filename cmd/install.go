@@ -10,8 +10,10 @@ import (
 var installCmd = &cobra.Command{
 	Use:   "install",
 	Short: "Install the package",
-	Long:  `Install the package provided first verifying the integrity of the artifacts.`,
-	Run:   install,
+	Long: `Install the package provided first verifying the integrity of the artifacts. Argument
+	is the package (.spm)%s\n`,
+	Args: cobra.MinimumNArgs(1),
+	Run:  install,
 }
 
 func init() {
@@ -19,5 +21,5 @@ func init() {
 }
 
 func install(cmd *cobra.Command, args []string) {
-	fmt.Println("install called")
+	fmt.Printf("install called %s\n", args[0])
 }
