@@ -38,6 +38,8 @@ var PublicKey, PrivateKey, PkiPassphrase string
 var PkgFormat, PkgPassword string
 var Workarea string
 
+var KeepWorkArea bool
+
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "spm",
@@ -61,6 +63,7 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(initConfig)
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.spm.yaml)")
+	rootCmd.PersistentFlags().BoolVar(&KeepWorkArea, "keep", false, "keep workarea")
 }
 
 // initConfig reads in config file and ENV variables if set.
