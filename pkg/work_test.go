@@ -9,7 +9,7 @@ func TestCreateWorkArea(t *testing.T) {
 	CreateWorkArea("/tmp")
 	CleanupWorkArea()
 	CreateWorkArea("/Users/rajasrinivasan/tmp")
-	CleanupWorkArea()
+	//CleanupWorkArea()
 
 }
 

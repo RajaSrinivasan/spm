@@ -4,6 +4,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"path/filepath"
 
 	uuid "github.com/google/uuid"
 )
@@ -22,6 +23,9 @@ func CreateWorkArea(root string) {
 	}
 	workArea = dirname
 	log.Printf("Workarea created %s\n", dirname)
+	os.Mkdir(filepath.Join(workArea, "package"), os.ModePerm)
+	os.Mkdir(filepath.Join(workArea, "artifacts"), os.ModePerm)
+	log.Printf("Created dir %s and %s\n", filepath.Join(workArea, "package"), filepath.Join(workArea, "artifacts"))
 }
 
 func CleanupWorkArea() {
