@@ -11,7 +11,7 @@ var installCmd = &cobra.Command{
 	Use:   "install",
 	Short: "Install the package",
 	Long: `Install the package provided first verifying the integrity of the artifacts. Argument
-	is the package (.spm)%s\n`,
+	is the package (.spm)\n`,
 	Args: cobra.MinimumNArgs(1),
 	Run:  install,
 }
