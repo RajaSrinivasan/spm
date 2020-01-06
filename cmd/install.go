@@ -11,11 +11,13 @@ var installCmd = &cobra.Command{
 	Use:   "install",
 	Short: "Install the package",
 	Long:  `Install the package provided first verifying the integrity of the artifacts.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("install called")
-	},
+	Run:   install,
 }
 
 func init() {
 	rootCmd.AddCommand(installCmd)
+}
+
+func install(cmd *cobra.Command, args []string) {
+	fmt.Println("install called")
 }

@@ -11,6 +11,18 @@ contents: [
       'from2' , 'to2' 
      ]
 
+pack:
+    - 
+        name: ../test/datafile1
+        destination: /opt/datafile1
+        mode: 077
+        own: 0:0
+    -
+        name: ../test2/datafile1
+        destination: /opt/datafile1
+        mode: 077
+        own: 0:0
+        
 preinstall:
     - step1
     - step2

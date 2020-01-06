@@ -12,11 +12,13 @@ var buildCmd = &cobra.Command{
 	Short: "Build a secure package",
 	Long: `Create a secure package based on the configuration file provided.
 Optionally push the artifact(s) to a distribution server`,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("build called")
-	},
+	Run: build,
 }
 
 func init() {
 	rootCmd.AddCommand(buildCmd)
+}
+
+func build(cmd *cobra.Command, args []string) {
+	fmt.Println("build called")
 }

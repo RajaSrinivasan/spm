@@ -36,6 +36,7 @@ var Pubpkg string
 var Pubart string
 var PublicKey, PrivateKey, PkiPassphrase string
 var PkgFormat, PkgPassword string
+var Workarea string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -74,9 +75,10 @@ func initConfig() {
 			fmt.Println(err)
 			os.Exit(1)
 		}
-
+		fmt.Printf("Home dir is %s\n", home)
 		// Search config in home directory with name ".spm" (without extension).
-		viper.AddConfigPath(home)
+		//viper.AddConfigPath(home)
+		viper.AddConfigPath("./example")
 		viper.SetConfigName(".spm")
 	}
 
@@ -96,8 +98,8 @@ func initConfig() {
 		viper.BindEnv("pkgpassword")
 		PkgPassword = viper.GetString("pkgpassword")
 		PkiPassphrase = viper.GetString("pkipassphrase")
-
-		fmt.Printf("PKI passphrase %s Pkg Password %s\n", PkiPassphrase, PkgPassword)
+		Workarea = viper.GetString("package.workarea")
+		fmt.Printf("PKI passphrase %s Pkg Password %s Workarea %s\n", PkiPassphrase, PkgPassword, Workarea)
 
 	} else {
 		fmt.Println(err)

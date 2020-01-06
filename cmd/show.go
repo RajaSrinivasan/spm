@@ -11,11 +11,13 @@ var showCmd = &cobra.Command{
 	Use:   "show",
 	Short: "Display the contantes of the package",
 	Long:  `Unpack the contents of the package, verify and list details about the package`,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("show called")
-	},
+	Run:   show,
 }
 
 func init() {
 	rootCmd.AddCommand(showCmd)
+}
+
+func show(cmd *cobra.Command, args []string) {
+	fmt.Println("show called")
 }
