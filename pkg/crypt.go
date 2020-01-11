@@ -7,6 +7,7 @@ import (
 	"crypto/cipher"
 	"crypto/rand"
 	"crypto/sha256"
+	"errors"
 	"io/ioutil"
 	"log"
 	"os"
@@ -60,8 +61,8 @@ func Encrypt(passphrase string, from string, to string) error {
 
 	ofile.Write(secret)
 	ofile.Write(iv)
-	log.Printf("IV generated: %x\n", iv)
 
+	//log.Printf("IV generated: %x\n", iv)
 	//str := cipher.NewCFBEncrypter(encalg, iv)
 
 	str := cipher.NewOFB(encalg, iv)
@@ -69,8 +70,8 @@ func Encrypt(passphrase string, from string, to string) error {
 	idata, _ := ioutil.ReadAll(ifile)
 	odata := make([]byte, len(idata))
 	str.XORKeyStream(odata, idata)
-	log.Printf("%s\n", string(idata))
-	log.Printf("%x\n", odata)
+	//log.Printf("%s\n", string(idata))
+	//log.Printf("%x\n", odata)
 	ofile.Write(odata)
 
 	return nil
@@ -100,29 +101,29 @@ func Decrypt(passphrase string, from string, to string) error {
 	_, err = bufr.Read(filepass)
 
 	//ifile.Read(filepass)
-	log.Printf("Password:  %x\n", secret)
-	log.Printf("From file: %x\n", filepass)
+	//log.Printf("Password:  %x\n", secret)
+	//log.Printf("From file: %x\n", filepass)
 
 	res := bytes.Compare(secret, filepass)
 	if res != 0 {
 		log.Printf("Passphrase comparison failed\n")
-		return nil
+		return errors.New("Passphrase comparison failed")
 	}
 	iv := make([]byte, aes.BlockSize)
 	_, err = bufr.Read(iv)
-	log.Printf("IV loaded: %x\n", iv)
+	//log.Printf("IV loaded: %x\n", iv)
 	encalg, err := aes.NewCipher(filepass)
 	if err != nil {
 		log.Printf("%s\n", err)
 		return err
 	}
 	st, _ := os.Stat(from)
-	log.Printf("Size of input file %d\n", st.Size())
+	//log.Printf("Size of input file %d\n", st.Size())
 	buf := make([]byte, int(st.Size())-len(secret)-len(iv))
 	//n, err := ifile.Read(buf)
 	//log.Printf("%d bytes read. %s\n", n, err)
 	bufr.Read(buf)
-	log.Printf("Encrypted data:\n,%x\n", buf)
+	//log.Printf("Encrypted data:\n,%x\n", buf)
 	obuf := make([]byte, len(buf))
 
 	str := cipher.NewOFB(encalg, iv)
@@ -130,11 +131,12 @@ func Decrypt(passphrase string, from string, to string) error {
 
 	str.XORKeyStream(obuf, buf)
 
-	n, err := ofile.Write(obuf)
+	_, err = ofile.Write(obuf)
 	ofile.Close()
-	log.Printf("%s\n", string(obuf))
-	log.Printf("%x\n", obuf)
-	log.Printf("%d bytes\n%s", n, err)
+
+	//log.Printf("%s\n", string(obuf))
+	//log.Printf("%x\n", obuf)
+	//log.Printf("%d bytes\n%s", n, err)
 
 	return nil
 }

@@ -23,8 +23,12 @@ func TestIV(t *testing.T) {
 
 func TestEncryptFile(t *testing.T) {
 	Encrypt("Thisisabadpassph", "crypt_test.go", "crypt_test_go.enc")
+	Encrypt("Thisisabadpassphrase", "crypt.go", "crypt_go.enc")
 }
 
 func TestDecryptFile(t *testing.T) {
+	Decrypt("Thisisabadpassphrase", "crypt_test_go.enc", "crypt_test_go")
 	Decrypt("Thisisabadpassph", "crypt_test_go.enc", "crypt_test_go")
+
+	Decrypt("Thisisabadpassphrase", "crypt_go.enc", "crypt_go")
 }
