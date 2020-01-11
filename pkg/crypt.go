@@ -32,18 +32,6 @@ func generateInitVector() []byte {
 	return iv
 }
 
-func generateEncryptorStream(passphrase string) (cipher.Stream, error) {
-	secret = generateKey(passphrase)
-	encalg, err := aes.NewCipher(secret)
-	if err != nil {
-		log.Printf("%s\n", err)
-		return nil, err
-	}
-	iv = generateInitVector()
-	stream := cipher.NewOFB(encalg, iv)
-	return stream, nil
-}
-
 func Encrypt(passphrase string, from string, to string) error {
 	log.Printf("Encrypt from: %s to %s passphrase %s\n", from, to, passphrase)
 
@@ -74,7 +62,9 @@ func Encrypt(passphrase string, from string, to string) error {
 	ofile.Write(iv)
 	log.Printf("IV generated: %x\n", iv)
 
-	str := cipher.NewCFBEncrypter(encalg, iv)
+	//str := cipher.NewCFBEncrypter(encalg, iv)
+
+	str := cipher.NewOFB(encalg, iv)
 
 	idata, _ := ioutil.ReadAll(ifile)
 	odata := make([]byte, len(idata))
@@ -82,14 +72,6 @@ func Encrypt(passphrase string, from string, to string) error {
 	log.Printf("%s\n", string(idata))
 	log.Printf("%x\n", odata)
 	ofile.Write(odata)
-
-	/*wtr := &cipher.StreamWriter{S: str, W: ofile}
-
-	n, err := io.Copy(wtr, ifile)
-	if err != nil {
-		log.Printf("%s\n", err)
-	}
-	log.Printf("%d bytes copied\n", n)*/
 
 	return nil
 }
@@ -143,8 +125,8 @@ func Decrypt(passphrase string, from string, to string) error {
 	log.Printf("Encrypted data:\n,%x\n", buf)
 	obuf := make([]byte, len(buf))
 
-	//str := cipher.NewOFB(encalg, iv)
-	str := cipher.NewCFBDecrypter(encalg, iv)
+	str := cipher.NewOFB(encalg, iv)
+	//str := cipher.NewCFBDecrypter(encalg, iv)
 
 	str.XORKeyStream(obuf, buf)
 
@@ -154,14 +136,5 @@ func Decrypt(passphrase string, from string, to string) error {
 	log.Printf("%x\n", obuf)
 	log.Printf("%d bytes\n%s", n, err)
 
-	/*
-
-		rdr := &cipher.StreamReader{S: str, R: ifile}
-
-		n, err := io.Copy(ofile, rdr)
-		if err != nil {
-			log.Printf("%s\n", err)
-		}
-		log.Printf("%d bytes copied\n", n)*/
 	return nil
 }
