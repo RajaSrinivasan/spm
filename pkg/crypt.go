@@ -13,9 +13,7 @@ import (
 	"os"
 )
 
-var salt = "How razorback-jumping frogs can level six piqued gymnasts!"
-var secret []byte
-var iv []byte
+const salt = "How razorback-jumping frogs can level six piqued gymnasts!"
 
 func generateKey(passphrase string) []byte {
 	salted := passphrase + salt
@@ -50,14 +48,14 @@ func Encrypt(passphrase string, from string, to string) error {
 	}
 	defer ifile.Close()
 
-	secret = generateKey(passphrase)
+	secret := generateKey(passphrase)
 	encalg, err := aes.NewCipher(secret)
 	if err != nil {
 		log.Printf("%s\n", err)
 		return err
 	}
 
-	iv = generateInitVector()
+	iv := generateInitVector()
 
 	ofile.Write(secret)
 	ofile.Write(iv)
@@ -94,7 +92,7 @@ func Decrypt(passphrase string, from string, to string) error {
 	}
 	defer ifile.Close()
 
-	secret = generateKey(passphrase)
+	secret := generateKey(passphrase)
 	filepass := make([]byte, len(secret))
 
 	bufr := bufio.NewReader(ifile)
