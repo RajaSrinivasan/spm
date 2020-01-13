@@ -33,7 +33,14 @@ func TestGenerate(t *testing.T) {
 
 func TestSignExternalKey(t *testing.T) {
 	Sign("sign.go", "sign.go.sig", "privatekey")
-	Sign("sign.go", "sign.go.2.sig", "privatekey")
+	Sign("sign.go", "sign.go.2.sig", "privatekey2")
 	Sign("sign_test.go", "sign_test.go.sig", "privatekey")
-	Sign("sign_test.go", "sign_test.go.2.sig", "privatekey")
+	Sign("sign_test.go", "sign_test.go.2.sig", "privatekey2")
+}
+
+func TestVerifyExternalKey(t *testing.T) {
+	Verify("sign.go", "sign.go.sig", "publickey")
+	Verify("sign.go", "sign.go.2.sig", "publickey2")
+	Verify("sign_test.go", "sign_test.go.sig", "publickey")
+	Verify("sign_test.go", "sign_test.go.2.sig", "publickey2")
 }
