@@ -5,42 +5,54 @@ import (
 	"testing"
 )
 
-func TestGenerateKey(t *testing.T) {
+var goodpassphrase = "Thisisagoodpassphrase"
 
-	_, err := generatePrivateKey()
+func TestGenerateKeys(t *testing.T) {
+	t.Log("Testing Key generation")
+	err := generateKeys("private.pem", "public.pem")
 	if err == nil {
 		log.Printf("Generated\n")
 	}
+}
 
-	_, err = generatePrivateKey()
+func TestGenerateKeysWithPassphrase(t *testing.T) {
+	t.Log("Testing Key generation")
+	err := generateKeysWithPassphrase("pwd_private.pem", "pwd_public.pem", goodpassphrase)
 	if err == nil {
 		log.Printf("Generated\n")
+	}
+}
+
+func TestLoadPrivateKeyfile(t *testing.T) {
+	t.Log("Testing Loading private pem files")
+	privkey, err := loadPrivateKey("private.pem")
+	if err == nil {
+		showPrivateKey(privkey)
+	}
+}
+
+func TestLoadPrivateKeyfileWithPassphrase(t *testing.T) {
+	t.Log("Testing Loading private pem files")
+	privkey, err := loadPrivateKeyWithPassphrase("pwd_private.pem", goodpassphrase)
+	if err == nil {
+		showPrivateKey(privkey)
 	}
 }
 
 func TestSign(t *testing.T) {
-	pvt, _ := generatePrivateKey()
-	sign("sign.go", "sign.go.sig", pvt)
-	sign("sign.go", "sign.go.2.sig", pvt)
-	sign("sign_test.go", "sign_test.go.sig", pvt)
-	sign("sign_test.go", "sign_test.go.2.sig", pvt)
+	err := Sign("sign.go", "sign.go.sig", "private.pem", "")
+	if err == nil {
+		log.Printf("Signed\n")
+	}
+	err = Sign("sign_test.go", "sign_test.go.sig", "private.pem", "")
+	if err == nil {
+		log.Printf("Signed\n")
+	}
 }
 
-func TestGenerate(t *testing.T) {
-	GenerateKeyPair("privatekey", "publickey")
-	GenerateKeyPair("privatekey2", "publickey2")
-}
-
-func TestSignExternalKey(t *testing.T) {
-	Sign("sign.go", "sign.go.sig", "privatekey")
-	Sign("sign.go", "sign.go.2.sig", "privatekey2")
-	Sign("sign_test.go", "sign_test.go.sig", "privatekey")
-	Sign("sign_test.go", "sign_test.go.2.sig", "privatekey2")
-}
-
-func TestVerifyExternalKey(t *testing.T) {
-	Verify("sign.go", "sign.go.sig", "publickey")
-	Verify("sign.go", "sign.go.2.sig", "publickey2")
-	Verify("sign_test.go", "sign_test.go.sig", "publickey")
-	Verify("sign_test.go", "sign_test.go.2.sig", "publickey2")
+func TestSignWithPassphrase(t *testing.T) {
+	err := Sign("sign.go", "sign.go.sig", "pwd_private.pem", goodpassphrase)
+	if err == nil {
+		log.Printf("Signed\n")
+	}
 }

@@ -6,14 +6,20 @@ import (
 	"crypto/rsa"
 	"crypto/sha256"
 	"crypto/x509"
+	"encoding/pem"
 	"fmt"
-	"os"
-
+	"io"
 	"io/ioutil"
 	"log"
+	"os"
+
+	"golang.org/x/crypto/ssh"
 )
 
+var Verbose = true
+
 const rsaKeySize = 2048
+const signatureFileType = ".sig"
 
 func showPrivateKey(pvt *rsa.PrivateKey) {
 	log.Printf("%s\n", pvt.D.Text(16))
@@ -28,57 +34,182 @@ func showPrivateKey(pvt *rsa.PrivateKey) {
 	log.Printf("PublicKey: %s\n", rsapub.N.Text(16))
 }
 
-func generatePrivateKey() (*rsa.PrivateKey, error) {
-	pvt, err := rsa.GenerateKey(rand.Reader, rsaKeySize)
+func loadPrivateKey(keyfile string) (*rsa.PrivateKey, error) {
+	keybytes, _ := ioutil.ReadFile(keyfile)
+	key, err := ssh.ParseRawPrivateKey(keybytes)
 	if err != nil {
 		log.Printf("%s\n", err)
 		return nil, err
 	}
-	showPrivateKey(pvt)
-	return pvt, nil
+	if Verbose {
+		log.Printf("%q\n", key)
+	}
+	return key.(*rsa.PrivateKey), nil
 }
 
-func GenerateKeyPair(priv, pub string) error {
-	pvt, err := rsa.GenerateKey(rand.Reader, rsaKeySize)
+func loadPrivateKeyWithPassphrase(keyfile string, passphrase string) (*rsa.PrivateKey, error) {
+	log.Printf("Passphrase %s\n", passphrase)
+	keybytes, _ := ioutil.ReadFile(keyfile)
+
+	block, _ := pem.Decode(keybytes)
+	if block == nil {
+		log.Printf("Unable to decode. block is nil\n")
+		return nil, nil
+	}
+	if block.Type != "PRIVATE KEY" {
+		log.Printf("Wrong block Type %s\n", block.Type)
+		return nil, nil
+	}
+
+	rawkey, err := x509.DecryptPEMBlock(block, []byte(passphrase))
+	if err != nil {
+		log.Printf("Error decrypting PEM block")
+		return nil, err
+	}
+	log.Printf("%q\n", rawkey)
+
+	key, err := x509.ParsePKCS8PrivateKey(rawkey)
+	if err != nil {
+		log.Printf("%s\n", err)
+		return nil, err
+	}
+	if Verbose {
+		log.Printf("%q\n", key)
+	}
+	return key.(*rsa.PrivateKey), nil
+}
+
+func generateKeys(priv, pub string) error {
+	privkey, err := rsa.GenerateKey(rand.Reader, rsaKeySize)
+	if err != nil {
+		log.Printf("%s\n", err)
+		return err
+	}
+	pvtder, err := x509.MarshalPKCS8PrivateKey(privkey)
 	if err != nil {
 		log.Printf("%s\n", err)
 		return err
 	}
 
-	pvtkeybytes, err := x509.MarshalPKCS8PrivateKey(pvt)
+	log.Printf("Converted to DER key\n")
+
+	block := &pem.Block{
+		Type:  "PRIVATE KEY",
+		Bytes: pvtder}
+	privpem, err := os.Create(priv)
 	if err != nil {
 		log.Printf("%s\n", err)
 		return err
 	}
 
-	privf, _ := os.Create(priv)
-	defer privf.Close()
-	privf.Write(pvtkeybytes)
+	defer privpem.Close()
+	err = pem.Encode(privpem, block)
+	if err != nil {
+		log.Printf("%s unable to PEM Encode\n", err)
+		return err
+	}
+	var pubkey rsa.PublicKey
+	pubkey = privkey.PublicKey
 
-	pubkey := pvt.Public()
-	rsapub := pubkey.(*rsa.PublicKey)
-	pubkeybytes, err := x509.MarshalPKIXPublicKey(rsapub)
+	pubder := x509.MarshalPKCS1PublicKey(&pubkey)
+
+	pblock := &pem.Block{
+		Type:  "PUBLIC KEY",
+		Bytes: pubder}
+
+	pubpem, err := os.Create(pub)
 	if err != nil {
 		log.Printf("%s\n", err)
 		return err
 	}
 
-	pubf, _ := os.Create(pub)
-	defer pubf.Close()
-	pubf.Write(pubkeybytes)
+	defer pubpem.Close()
+	err = pem.Encode(pubpem, pblock)
+	if err != nil {
+		log.Printf("%s unable to PEM Encode\n", err)
+		return err
+	}
 
 	return nil
+}
+
+func generateKeysWithPassphrase(priv, pub string, passphrase string) error {
+	privkey, err := rsa.GenerateKey(rand.Reader, rsaKeySize)
+	if err != nil {
+		log.Printf("%s\n", err)
+		return err
+	}
+	pvtder, err := x509.MarshalPKCS8PrivateKey(privkey)
+	if err != nil {
+		log.Printf("%s\n", err)
+		return err
+	}
+
+	log.Printf("Converted to DER key\n")
+	block, err := x509.EncryptPEMBlock(rand.Reader, "PRIVATE KEY", pvtder, []byte(passphrase), x509.PEMCipherAES256)
+	if err != nil {
+		log.Printf("%s", err)
+		return nil
+	}
+	privpem, err := os.Create(priv)
+	if err != nil {
+		log.Printf("%s\n", err)
+		return err
+	}
+
+	defer privpem.Close()
+
+	err = pem.Encode(privpem, block)
+	if err != nil {
+		log.Printf("%s unable to PEM Encode\n", err)
+		return err
+	}
+	var pubkey rsa.PublicKey
+	pubkey = privkey.PublicKey
+
+	pubder := x509.MarshalPKCS1PublicKey(&pubkey)
+
+	pblock := &pem.Block{
+		Type:  "PUBLIC KEY",
+		Bytes: pubder}
+
+	pubpem, err := os.Create(pub)
+	if err != nil {
+		log.Printf("%s\n", err)
+		return err
+	}
+
+	defer pubpem.Close()
+	err = pem.Encode(pubpem, pblock)
+	if err != nil {
+		log.Printf("%s unable to PEM Encode\n", err)
+		return err
+	}
+
+	return nil
+}
+
+func fileHash(file string) ([]byte, error) {
+	f, err := os.Open(file)
+	if err != nil {
+		log.Printf("%s\n", err)
+		return nil, nil
+	}
+	defer f.Close()
+
+	h := sha256.New()
+	io.Copy(h, f)
+	hash := h.Sum(nil)
+	return hash, nil
 }
 
 func sign(file string, sigfile string, pvt *rsa.PrivateKey) error {
 
 	log.Printf("Signing %s creating %s\n", file, sigfile)
-
-	databytes, _ := ioutil.ReadFile(file)
-	h := sha256.New()
-	h.Write(databytes)
-	datahash := h.Sum(nil)
-	log.Printf("Datahash: %x\n", datahash)
+	datahash, _ := fileHash(file)
+	if Verbose {
+		log.Printf("Datahash: %x\n", datahash)
+	}
 
 	signature, err := rsa.SignPKCS1v15(rand.Reader, pvt, crypto.SHA256, datahash[:])
 	if err != nil {
@@ -89,58 +220,23 @@ func sign(file string, sigfile string, pvt *rsa.PrivateKey) error {
 	sigf, _ := os.Create(sigfile)
 	defer sigf.Close()
 	sigf.Write(signature)
-
-	fmt.Printf("Signature: %x\n", signature)
+	if Verbose {
+		fmt.Printf("Signature: %x\n", signature)
+	}
 	return nil
 }
 
-func Sign(file string, sigfile string, pvtkeyfile string) error {
-	pvtbytes, err := ioutil.ReadFile(pvtkeyfile)
+func Sign(file string, sigfile string, pvtkeyfile string, passphrase string) error {
+	var err error
+	var rsapvtkey *rsa.PrivateKey
+	if len(passphrase) > 0 {
+		rsapvtkey, err = loadPrivateKeyWithPassphrase(pvtkeyfile, passphrase)
+	} else {
+		rsapvtkey, err = loadPrivateKey(pvtkeyfile)
+	}
 	if err != nil {
-		log.Printf("%s\n", err)
 		return err
 	}
-	pvtkey, err := x509.ParsePKCS8PrivateKey(pvtbytes)
-	if err != nil {
-		log.Printf("%s\n", err)
-		return err
-	}
-	rsapvtkey := pvtkey.(*rsa.PrivateKey)
 	err = sign(file, sigfile, rsapvtkey)
 	return err
-}
-
-func verify(file string, sigfile string, pubkey *rsa.PublicKey) error {
-	databytes, _ := ioutil.ReadFile(file)
-	h := sha256.New()
-	h.Write(databytes)
-	hashed := h.Sum(nil)
-
-	sigbytes, _ := ioutil.ReadFile(sigfile)
-	err := rsa.VerifyPKCS1v15(pubkey, crypto.SHA256, hashed, sigbytes)
-	if err != nil {
-		log.Printf("%s\n", err)
-		return err
-	}
-	return nil
-}
-
-func Verify(file string, sigfile string, pubkeyfile string) error {
-	log.Printf("Verifying %s signature %s using %s\n", file, sigfile, pubkeyfile)
-	pubbytes, err := ioutil.ReadFile(pubkeyfile)
-	if err != nil {
-		log.Printf("%s\n", err)
-		return err
-	}
-	log.Printf("Loaded %s %d bytes\n", pubkeyfile, len(pubbytes))
-	pubkey, err := x509.ParsePKIXPublicKey(pubbytes)
-	if err != nil {
-		log.Printf("%s\n", err)
-		return err
-	}
-
-	rsapubkey := pubkey.(*rsa.PublicKey)
-	err = verify(file, sigfile, rsapubkey)
-
-	return nil
 }
