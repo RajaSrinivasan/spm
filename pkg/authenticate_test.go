@@ -31,6 +31,8 @@ func TestAuthenticate(t *testing.T) {
 
 func TestAuthenticateFiles(t *testing.T) {
 	os.Chdir("../tests")
+	wd, _ := os.Getwd()
+	defer os.Chdir(wd)
 	files := []string{"lsfiles.txt", "private.pem", "public.pem"}
 	SignFile("lsfiles.txt", "lsfiles.txt.sig", "private.pem", "")
 	SignFile("private.pem", "private.pem.sig", "private.pem", "")
