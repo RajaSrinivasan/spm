@@ -16,7 +16,7 @@ func init() {
 
 }
 
-func CreateWorkArea(root string) {
+func CreateWorkArea(root string) string {
 	dirname, err := ioutil.TempDir(root, "spm")
 	if err != nil {
 		log.Fatal(err)
@@ -26,6 +26,7 @@ func CreateWorkArea(root string) {
 	os.Mkdir(filepath.Join(workArea, "package"), os.ModePerm)
 	os.Mkdir(filepath.Join(workArea, "artifacts"), os.ModePerm)
 	log.Printf("Created dir %s and %s\n", filepath.Join(workArea, "package"), filepath.Join(workArea, "artifacts"))
+	return workArea
 }
 
 func CleanupWorkArea() {
@@ -33,9 +34,10 @@ func CleanupWorkArea() {
 	log.Printf("Removed %s\n", workArea)
 }
 
-func CreateUniqueId() {
+func CreateUniqueId() uuid.UUID {
 	uniqueId = uuid.New()
 	log.Printf("Unique Id created %s\n", uniqueId.String())
+	return uniqueId
 }
 
 func SetUniqueId(id string) {
