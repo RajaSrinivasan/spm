@@ -35,15 +35,16 @@ func showPrivateKey(pvt *rsa.PrivateKey) {
 }
 
 func LoadPrivateKey(keyfile string) (*rsa.PrivateKey, error) {
+	if Verbose {
+		log.Printf("Loading private key %s\n", keyfile)
+	}
 	keybytes, _ := ioutil.ReadFile(keyfile)
 	key, err := ssh.ParseRawPrivateKey(keybytes)
 	if err != nil {
 		log.Printf("%s\n", err)
 		return nil, err
 	}
-	if Verbose {
-		log.Printf("%q\n", key)
-	}
+
 	return key.(*rsa.PrivateKey), nil
 }
 
@@ -80,6 +81,9 @@ func loadPrivateKeyWithPassphrase(keyfile string, passphrase string) (*rsa.Priva
 }
 
 func GenerateKeys(priv, pub string) error {
+	if Verbose {
+		log.Printf("Generating keys Private: %s and Public: %s\n", priv, pub)
+	}
 	privkey, err := rsa.GenerateKey(rand.Reader, rsaKeySize)
 	if err != nil {
 		log.Printf("%s\n", err)
@@ -91,7 +95,7 @@ func GenerateKeys(priv, pub string) error {
 		return err
 	}
 
-	log.Printf("Converted to DER key\n")
+	//log.Printf("Converted to DER key\n")
 
 	block := &pem.Block{
 		Type:  "PRIVATE KEY",
@@ -202,7 +206,7 @@ func fileHash(file string) ([]byte, error) {
 	return hash, nil
 }
 
-func sign(file string, sigfile string, pvt *rsa.PrivateKey) error {
+func Sign(file string, sigfile string, pvt *rsa.PrivateKey) error {
 
 	log.Printf("Signing %s creating %s\n", file, sigfile)
 	datahash, _ := fileHash(file)
@@ -225,9 +229,12 @@ func sign(file string, sigfile string, pvt *rsa.PrivateKey) error {
 	return nil
 }
 
-func Sign(file string, sigfile string, pvtkeyfile string, passphrase string) error {
+func SignFile(file string, sigfile string, pvtkeyfile string, passphrase string) error {
 	var err error
 	var rsapvtkey *rsa.PrivateKey
+	if Verbose {
+		log.Printf("Signing %s with %s to generate %s\n", file, pvtkeyfile, sigfile)
+	}
 	if len(passphrase) > 0 {
 		rsapvtkey, err = loadPrivateKeyWithPassphrase(pvtkeyfile, passphrase)
 	} else {
@@ -236,6 +243,6 @@ func Sign(file string, sigfile string, pvtkeyfile string, passphrase string) err
 	if err != nil {
 		return err
 	}
-	err = sign(file, sigfile, rsapvtkey)
+	err = Sign(file, sigfile, rsapvtkey)
 	return err
 }
