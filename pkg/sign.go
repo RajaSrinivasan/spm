@@ -34,7 +34,7 @@ func showPrivateKey(pvt *rsa.PrivateKey) {
 	log.Printf("PublicKey: %s\n", rsapub.N.Text(16))
 }
 
-func loadPrivateKey(keyfile string) (*rsa.PrivateKey, error) {
+func LoadPrivateKey(keyfile string) (*rsa.PrivateKey, error) {
 	keybytes, _ := ioutil.ReadFile(keyfile)
 	key, err := ssh.ParseRawPrivateKey(keybytes)
 	if err != nil {
@@ -79,7 +79,7 @@ func loadPrivateKeyWithPassphrase(keyfile string, passphrase string) (*rsa.Priva
 	return key.(*rsa.PrivateKey), nil
 }
 
-func generateKeys(priv, pub string) error {
+func GenerateKeys(priv, pub string) error {
 	privkey, err := rsa.GenerateKey(rand.Reader, rsaKeySize)
 	if err != nil {
 		log.Printf("%s\n", err)
@@ -101,7 +101,6 @@ func generateKeys(priv, pub string) error {
 		log.Printf("%s\n", err)
 		return err
 	}
-
 	defer privpem.Close()
 	err = pem.Encode(privpem, block)
 	if err != nil {
@@ -232,7 +231,7 @@ func Sign(file string, sigfile string, pvtkeyfile string, passphrase string) err
 	if len(passphrase) > 0 {
 		rsapvtkey, err = loadPrivateKeyWithPassphrase(pvtkeyfile, passphrase)
 	} else {
-		rsapvtkey, err = loadPrivateKey(pvtkeyfile)
+		rsapvtkey, err = LoadPrivateKey(pvtkeyfile)
 	}
 	if err != nil {
 		return err

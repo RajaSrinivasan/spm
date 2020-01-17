@@ -9,7 +9,7 @@ var goodpassphrase = "Thisisagoodpassphrase"
 
 func TestGenerateKeys(t *testing.T) {
 	t.Log("Testing Key generation")
-	err := generateKeys("private.pem", "public.pem")
+	err := GenerateKeys("../tests/private.pem", "../tests/public.pem")
 	if err == nil {
 		log.Printf("Generated\n")
 	}
@@ -25,7 +25,7 @@ func TestGenerateKeysWithPassphrase(t *testing.T) {
 
 func TestLoadPrivateKeyfile(t *testing.T) {
 	t.Log("Testing Loading private pem files")
-	privkey, err := loadPrivateKey("private.pem")
+	privkey, err := LoadPrivateKey("private.pem")
 	if err == nil {
 		showPrivateKey(privkey)
 	}
