@@ -1,0 +1,39 @@
+total 24
+-rw-r--r--   1 rajasrinivasan  staff  1080 Dec 31 20:18 LICENSE
+-rw-r--r--   1 rajasrinivasan  staff   307 Jan 10 00:59 Makefile
+drwxr-x--x   6 rajasrinivasan  staff   192 Dec 31 20:28 cmd
+drwxr-xr-x   4 rajasrinivasan  staff   128 Jan  2 22:27 example
+drwxr-xr-x  13 rajasrinivasan  staff   416 Jan 17 02:55 pkg
+-rw-r--r--   1 rajasrinivasan  staff  1124 Dec 31 20:20 spm.go
+drwxr-xr-x   5 rajasrinivasan  staff   160 Jan 17 03:01 tests
+
+../cmd:
+total 32
+-rw-r--r--  1 rajasrinivasan  staff   566 Jan  5 22:42 build.go
+-rw-r--r--  1 rajasrinivasan  staff   502 Jan  5 23:15 install.go
+-rw-r--r--  1 rajasrinivasan  staff  3695 Jan  5 23:14 root.go
+-rw-r--r--  1 rajasrinivasan  staff   465 Jan  5 22:45 show.go
+
+../example:
+total 8
+-rw-r--r--  1 rajasrinivasan  staff  577 Jan  2 23:30 sp1.yaml
+
+../pkg:
+total 96
+-rw-r--r--  1 rajasrinivasan  staff  2093 Jan 16 18:41 authenticate.go
+-rw-r--r--  1 rajasrinivasan  staff   709 Jan 16 18:43 authenticate_test.go
+-rw-r--r--  1 rajasrinivasan  staff  2940 Jan 11 06:48 crypt.go
+-rw-r--r--  1 rajasrinivasan  staff  1000 Jan 11 06:42 crypt_test.go
+-rw-r--r--  1 rajasrinivasan  staff  1352 Jan 13 13:47 pack.go
+-rw-r--r--  1 rajasrinivasan  staff   686 Jan 13 13:40 pack_test.go
+-rw-------  1 rajasrinivasan  staff  1896 Jan 16 17:11 pwd_id_rsa
+-rw-r--r--  1 rajasrinivasan  staff  4985 Jan 17 03:00 sign.go
+-rw-r--r--  1 rajasrinivasan  staff  1332 Jan 17 03:00 sign_test.go
+-rw-r--r--  1 rajasrinivasan  staff   997 Jan 10 00:57 work.go
+-rw-r--r--  1 rajasrinivasan  staff   363 Jan 10 00:57 work_test.go
+
+../tests:
+total 16
+-rw-r--r--  1 rajasrinivasan  staff     0 Jan 17 03:01 lsfiles.txt
+-rw-r--r--  1 rajasrinivasan  staff  1704 Jan 17 02:59 private.pem
+-rw-r--r--  1 rajasrinivasan  staff   418 Jan 17 02:59 public.pem
