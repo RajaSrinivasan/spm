@@ -1,8 +1,7 @@
 package cmd
 
 import (
-	"fmt"
-
+	"../impl"
 	"github.com/spf13/cobra"
 )
 
@@ -11,7 +10,7 @@ var installCmd = &cobra.Command{
 	Use:   "install",
 	Short: "Install the package",
 	Long: `Install the package provided first verifying the integrity of the artifacts. Argument
-	is the package (.spm)\n`,
+	is the package (.spm)`,
 	Args: cobra.MinimumNArgs(1),
 	Run:  install,
 }
@@ -21,5 +20,5 @@ func init() {
 }
 
 func install(cmd *cobra.Command, args []string) {
-	fmt.Printf("install called %s\n", args[0])
+	impl.Install(args[0])
 }

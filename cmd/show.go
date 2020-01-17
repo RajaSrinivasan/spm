@@ -1,8 +1,7 @@
 package cmd
 
 import (
-	"fmt"
-
+	"../impl"
 	"github.com/spf13/cobra"
 )
 
@@ -20,5 +19,5 @@ func init() {
 }
 
 func show(cmd *cobra.Command, args []string) {
-	fmt.Printf("show called %s\n", args[0])
+	impl.Show(args[0])
 }

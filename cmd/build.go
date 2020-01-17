@@ -1,8 +1,7 @@
 package cmd
 
 import (
-	"fmt"
-
+	"../impl"
 	"github.com/spf13/cobra"
 )
 
@@ -21,5 +20,5 @@ func init() {
 }
 
 func build(cmd *cobra.Command, args []string) {
-	fmt.Printf("build called to process %s\n", args[0])
+	impl.Build(args[0])
 }
