@@ -3,15 +3,16 @@ package pkg
 import (
 	"crypto"
 	"crypto/rsa"
-	"crypto/sha256"
 	"crypto/x509"
 	"encoding/pem"
 	"io/ioutil"
 	"log"
 )
 
-func loadPublicKey(pubkeyfile string) (*rsa.PublicKey, error) {
-
+func LoadPublicKey(pubkeyfile string) (*rsa.PublicKey, error) {
+	if Verbose {
+		log.Printf("Loading public key %s\n", pubkeyfile)
+	}
 	keybytes, err := ioutil.ReadFile(pubkeyfile)
 	if err != nil {
 		log.Printf("%v\n", err)
@@ -33,25 +34,15 @@ func loadPublicKey(pubkeyfile string) (*rsa.PublicKey, error) {
 		log.Printf("%s\n", err)
 		return nil, err
 	}
-	log.Printf("Public key parsed\n")
-
-	/*decode string ssh-rsa format to native type
-	pub_key, err := ssh.DecodePublicKey(string(pubbytes))
-	if err != nil {
-		log.Printf("%v\n", err)
+	if Verbose {
+		log.Printf("Public key file %s parsed\n", pubkeyfile)
 	}
 
-	rsapubkey := pub_key.(*rsa.PublicKey)
-	return rsapubkey, nil*/
 	return pubkey, nil
 }
 
-func authenticate(file string, sigfile string, pubkey *rsa.PublicKey) error {
-	databytes, _ := ioutil.ReadFile(file)
-	h := sha256.New()
-	h.Write(databytes)
-	hashed := h.Sum(nil)
-
+func Authenticate(file string, sigfile string, pubkey *rsa.PublicKey) error {
+	hashed, _ := fileHash(file)
 	sigbytes, _ := ioutil.ReadFile(sigfile)
 	err := rsa.VerifyPKCS1v15(pubkey, crypto.SHA256, hashed, sigbytes)
 	if err != nil {
@@ -62,29 +53,33 @@ func authenticate(file string, sigfile string, pubkey *rsa.PublicKey) error {
 	return nil
 }
 
-func Authenticate(file string, sigfile string, pubkeyfile string) error {
-
-	rsapubkey, err := loadPublicKey(pubkeyfile)
+func AuthenticateFile(file string, sigfile string, pubkeyfile string) error {
+	if Verbose {
+		log.Printf("Authenticating %s signature %s publickey file %s\n", file, sigfile, pubkeyfile)
+	}
+	rsapubkey, err := LoadPublicKey(pubkeyfile)
 	if err != nil {
 		return err
 	}
-	log.Printf("Loaded public key %s\n", pubkeyfile)
-	err = authenticate(file, sigfile, rsapubkey)
+	err = Authenticate(file, sigfile, rsapubkey)
 	return err
 }
 
 func AuthenticateFiles(files []string, pub string) error {
-	log.Printf("Authenticating using %s of %d files\n", pub, len(files))
-	pubkeyfile, err := loadPublicKey(pub)
+	if Verbose {
+		log.Printf("Authenticating %d files using %s\n", len(files), pub)
+	}
+
+	pubkeyfile, err := LoadPublicKey(pub)
 	if err != nil {
 		log.Printf("Cannot authenticate files. Unable to load Public Key file\n")
 		return err
 	}
 	for _, f := range files {
 		sigfile := f + signatureFileType
-		err = authenticate(f, sigfile, pubkeyfile)
+		err = Authenticate(f, sigfile, pubkeyfile)
 		if err != nil {
-			return err
+			log.Printf("Autentication failed for %s\n", f)
 		}
 	}
 	return nil
