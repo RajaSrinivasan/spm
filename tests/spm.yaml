@@ -1,0 +1,30 @@
+
+package:
+    name: ServicePack
+    version: 1.2
+
+security:
+    publickey: ~/.ssh/id_rsa.pub 
+    privatekey: ~/.ssh/id_rsa
+    passphrase: $(PASSWD)
+
+sections:
+    - build
+    - publish
+    - preinstall
+    - install
+    - postinstall
+
+contents:
+    - from: from1 
+      to: /var/tmp/from1
+    - from: /opt/from2/ 
+      to: /opt/to2
+
+
+preinstall:
+    - step1
+    - step2
+install:
+    - step1
+    - step2

@@ -6,6 +6,8 @@ import (
 	"os"
 	"time"
 
+	"../pkg"
+	uuid "github.com/google/uuid"
 	yaml "gopkg.in/yaml.v3"
 )
 
@@ -14,7 +16,8 @@ type Content struct {
 	To   string `yaml:"to"`
 }
 type Package struct {
-	ID       string    `yaml:"id"`
+	Name     string    `yaml:"name"`
+	ID       uuid.UUID `yaml:"id"`
 	Version  string    `yaml:"version"`
 	Hostname string    `yaml:"hostname"`
 	Created  time.Time `yaml:"created"`
@@ -62,7 +65,7 @@ func LoadConfig(cfgfile string) *Config {
 func (cfg *Config) SaveManifest(manifestfile string) {
 	cfg.Package.Created = time.Now()
 	cfg.Package.Hostname, _ = os.Hostname()
-
+	cfg.Package.ID = pkg.CreateUniqueId()
 	ofile, _ := os.Create(manifestfile)
 	encoder := yaml.NewEncoder(ofile)
 	encoder.Encode(cfg)
