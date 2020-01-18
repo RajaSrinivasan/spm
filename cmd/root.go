@@ -34,8 +34,8 @@ import (
 var cfgFile string
 var Pubpkg string
 var Pubart string
-var PublicKey, PrivateKey, PkiPassphrase string
-var PkgFormat, PkgPassword string
+var PkiPassphrase string
+var PkgPassword string
 var Workarea string
 
 var KeepWorkArea bool
@@ -93,9 +93,7 @@ func initConfig() {
 		Pubpkg = viper.GetString("pubpkg")
 		Pubart = viper.GetString("pubart")
 		fmt.Printf("Pkg publish url=%s Artifacts=%s\n", Pubpkg, Pubart)
-		PublicKey = viper.GetString("security.publickey")
-		PrivateKey = viper.GetString("security.privatekey")
-		PkgFormat = viper.GetString("package.format")
+
 		viper.SetEnvPrefix("spm")
 		viper.BindEnv("pkipassphrase")
 		viper.BindEnv("pkgpassword")
