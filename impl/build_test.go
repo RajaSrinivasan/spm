@@ -6,8 +6,8 @@ import (
 )
 
 func TestBuild(t *testing.T) {
-	Build("../tests/spm.yaml")
-	Build("../tests/goodpkg.yaml")
+	Build("../tests/spm.yaml", "../tests/spm.spm")
+	Build("../tests/goodpkg.yaml", "../tests/goodpkg.spm")
 }
 
 func TestMakePackageName(t *testing.T) {
