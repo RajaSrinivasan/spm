@@ -50,7 +50,7 @@ func makePackageName(cfgname string) string {
 	return pkgname
 }
 
-func Build(cfgfile string) {
+func Build(cfgfile string, outfile string) {
 	log.Printf("Building package for configuration file %s\n", cfgfile)
 	pkg.CreateWorkArea(Workarea)
 	pkgconfig, err := cfg.LoadConfig(cfgfile)
@@ -90,4 +90,5 @@ func Build(cfgfile string) {
 	pkg.Packfiles(spmname, pkg.ContentsDir)
 	log.Printf("Created %s\n", spmbasename)
 
+	pkg.Encrypt(passphrase string, spmbasename , outfile) 
 }
