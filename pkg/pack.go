@@ -27,7 +27,7 @@ func addFile(nm string, info os.FileInfo, tf *tar.Writer) error {
 	return nil
 }
 
-func packfiles(fn, dir string) error {
+func Packfiles(fn, dir string) error {
 
 	pkgfilename := fn
 	pkgfile, err := os.Create(pkgfilename)
@@ -59,10 +59,10 @@ func packfiles(fn, dir string) error {
 }
 
 func Package(bn string) error {
-	err := packfiles(filepath.Join(workArea, bn+".spm"), filepath.Join(workArea, "package"))
+	err := Packfiles(filepath.Join(workArea, bn+".spm"), filepath.Join(workArea, "package"))
 	if err != nil {
 		return err
 	}
-	err = packfiles(filepath.Join(workArea, bn+"_art.spm"), filepath.Join(workArea, "artifacts"))
+	err = Packfiles(filepath.Join(workArea, bn+"_art.spm"), filepath.Join(workArea, "artifacts"))
 	return err
 }

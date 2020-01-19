@@ -31,22 +31,22 @@ type Config struct {
 	Postinstall []string  `yaml:"postinstall"`
 }
 
-func LoadConfig(cfgfile string) *Config {
+func LoadConfig(cfgfile string) (*Config, error) {
 
 	inpfile, err := os.Open(cfgfile)
 	if err != nil {
-		panic(err)
+		log.Printf("%s\n", err)
+		return nil, err
 	}
 	cfg := new(Config)
 	decoder := yaml.NewDecoder(inpfile)
 	err = decoder.Decode(&cfg)
 	if err != nil {
-		panic(err)
+		log.Printf("%s\n", err)
+		return nil, err
 	}
-	fmt.Printf("id : %s\n", cfg.Package.ID)
-	for _, cont := range cfg.Contents {
-		fmt.Printf("%s %s\n", cont.From, cont.To)
-	}
+	fmt.Printf("Loaded package File: %s Name : %s\n", cfgfile, cfg.Package.Name)
+
 	if len(cfg.Preinstall) == 0 {
 		log.Printf("No Preinstall steps to execute\n")
 	}
@@ -59,7 +59,7 @@ func LoadConfig(cfgfile string) *Config {
 		log.Printf("No Install steps specified. Only file delivery\n")
 	}
 
-	return cfg
+	return cfg, nil
 }
 
 func (cfg *Config) SaveManifest(manifestfile string) {

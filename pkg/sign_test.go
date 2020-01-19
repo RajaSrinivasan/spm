@@ -42,16 +42,16 @@ func TestLoadPrivateKeyfileWithPassphrase(t *testing.T) {
 }
 
 func TestSignFile(t *testing.T) {
-	err := SignFile("sign.go", "../tests/sign.go.sig", "../tests/private.pem", "")
+	err := SignFile("sign.go", "../tests/sign.go.sig", "../tests/private.pem")
 	if err == nil {
 		log.Printf("Signed\n")
 	}
-	err = SignFile("sign_test.go", "../tests/sign_test.go.sig", "../tests/private.pem", "")
+	err = SignFile("sign_test.go", "../tests/sign_test.go.sig", "../tests/private.pem")
 	if err == nil {
 		log.Printf("Signed\n")
 	}
-	SignFile("sign_test.go", "../tests/sign_test1.go.sig", "../tests/bad_private.pem", "")
-	SignFile("sign_test.go", "../tests/sign_test2.go.sig", "../tests/bad_private.pem", "")
+	SignFile("sign_test.go", "../tests/sign_test1.go.sig", "../tests/bad_private.pem")
+	SignFile("sign_test.go", "../tests/sign_test2.go.sig", "../tests/bad_private.pem")
 }
 
 func TestSign(t *testing.T) {
@@ -74,7 +74,7 @@ func TestSign(t *testing.T) {
 }
 
 func TestSignWithPassphrase(t *testing.T) {
-	err := SignFile("sign.go", "sign.go.sig", "pwd_private.pem", goodpassphrase)
+	err := signFileWithPassphrase("sign.go", "sign.go.sig", "pwd_private.pem", goodpassphrase)
 	if err == nil {
 		log.Printf("Signed\n")
 	}

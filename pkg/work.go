@@ -12,6 +12,10 @@ import (
 var workArea string
 var uniqueId uuid.UUID
 
+var ContentsDir string
+var ArtifactsDir string
+var WorkDir string
+
 func init() {
 
 }
@@ -23,9 +27,17 @@ func CreateWorkArea(root string) string {
 	}
 	workArea = dirname
 	log.Printf("Workarea created %s\n", dirname)
-	os.Mkdir(filepath.Join(workArea, "package"), os.ModePerm)
-	os.Mkdir(filepath.Join(workArea, "artifacts"), os.ModePerm)
-	log.Printf("Created dir %s and %s\n", filepath.Join(workArea, "package"), filepath.Join(workArea, "artifacts"))
+
+	ContentsDir = filepath.Join(workArea, "contents")
+	os.Mkdir(ContentsDir, os.ModePerm)
+
+	ArtifactsDir = filepath.Join(workArea, "artifacts")
+	os.Mkdir(ArtifactsDir, os.ModePerm)
+
+	WorkDir = filepath.Join(workArea, "work")
+	os.Mkdir(WorkDir, os.ModePerm)
+
+	log.Printf("Created dir %s and %s\n", filepath.Join(workArea, ContentsDir), filepath.Join(workArea, "artifacts"))
 	return workArea
 }
 

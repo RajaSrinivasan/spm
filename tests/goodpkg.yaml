@@ -1,0 +1,19 @@
+
+package:
+    name: ServicePack
+    version: 1.2
+
+contents:
+    - from: ../pkg/sign.go 
+      to: /tmp/sign.go
+    - from: ../pkg/sign_test.go
+      to: /tmp/sign_test.go
+    - from: ../impl/build.go
+      to: /tmp/build.go
+
+preinstall:
+    - step1
+    - step2
+install:
+    - step1
+    - step2

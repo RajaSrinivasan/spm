@@ -9,8 +9,10 @@ func TestLoadConfig(t *testing.T) {
 }
 
 func TestSaveManifest(t *testing.T) {
-	cfg := LoadConfig("../tests/spm.yaml")
+	cfg, _ := LoadConfig("../tests/spm.yaml")
 	cfg.SaveManifest("../tests/Packagefile")
-	cfg2 := LoadConfig("../tests/Packagefile")
+	cfg2, _ := LoadConfig("../tests/Packagefile")
 	cfg2.SaveManifest("../tests/Packagefile2")
+	LoadConfig("../tests/badspm.yaml")
+
 }

@@ -20,6 +20,8 @@ var Verbose = true
 
 const rsaKeySize = 2048
 const signatureFileType = ".sig"
+const DefaultPrivateKeyFileName = "private.pem"
+const DefaultPublicKeyFileName = "public.pem"
 
 func showPrivateKey(pvt *rsa.PrivateKey) {
 	log.Printf("%s\n", pvt.D.Text(16))
@@ -229,7 +231,7 @@ func Sign(file string, sigfile string, pvt *rsa.PrivateKey) error {
 	return nil
 }
 
-func SignFile(file string, sigfile string, pvtkeyfile string, passphrase string) error {
+func signFileWithPassphrase(file string, sigfile string, pvtkeyfile string, passphrase string) error {
 	var err error
 	var rsapvtkey *rsa.PrivateKey
 	if Verbose {
@@ -245,4 +247,35 @@ func SignFile(file string, sigfile string, pvtkeyfile string, passphrase string)
 	}
 	err = Sign(file, sigfile, rsapvtkey)
 	return err
+}
+
+func SignFile(file string, sigfile string, pvtkeyfile string) error {
+	var err error
+	var rsapvtkey *rsa.PrivateKey
+	if Verbose {
+		log.Printf("Signing %s with %s to generate %s\n", file, pvtkeyfile, sigfile)
+	}
+
+	rsapvtkey, err = LoadPrivateKey(pvtkeyfile)
+	if err != nil {
+		return err
+	}
+	err = Sign(file, sigfile, rsapvtkey)
+	return err
+}
+
+func SignFiles(files []string, pvtkeyfile string) error {
+	log.Printf("Signing using %s of %d files\n", pvtkeyfile, len(files))
+	rsapvtkey, err := LoadPrivateKey(pvtkeyfile)
+	if err != nil {
+		return err
+	}
+	for _, f := range files {
+		sigfname := f + signatureFileType
+		err = Sign(f, sigfname, rsapvtkey)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }

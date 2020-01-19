@@ -25,6 +25,7 @@ import (
 	"fmt"
 	"os"
 
+	"../impl"
 	"github.com/spf13/cobra"
 
 	homedir "github.com/mitchellh/go-homedir"
@@ -36,9 +37,6 @@ var Pubpkg string
 var Pubart string
 var PkiPassphrase string
 var PkgPassword string
-var Workarea string
-
-var KeepWorkArea bool
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -63,7 +61,7 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(initConfig)
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.spm.yaml)")
-	rootCmd.PersistentFlags().BoolVar(&KeepWorkArea, "keep", false, "keep workarea")
+	rootCmd.PersistentFlags().BoolVar(&impl.KeepWorkArea, "keep", false, "keep workarea")
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -99,8 +97,8 @@ func initConfig() {
 		viper.BindEnv("pkgpassword")
 		PkgPassword = viper.GetString("pkgpassword")
 		PkiPassphrase = viper.GetString("pkipassphrase")
-		Workarea = viper.GetString("package.workarea")
-		fmt.Printf("PKI passphrase %s Pkg Password %s Workarea %s\n", PkiPassphrase, PkgPassword, Workarea)
+		impl.Workarea = viper.GetString("package.workarea")
+		fmt.Printf("PKI passphrase %s Pkg Password %s Workarea %s\n", PkiPassphrase, PkgPassword, impl.Workarea)
 
 	} else {
 		fmt.Println(err)
