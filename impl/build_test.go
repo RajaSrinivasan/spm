@@ -7,6 +7,7 @@ import (
 
 func TestBuild(t *testing.T) {
 	Build("../tests/spm.yaml", "../tests/spm.spm")
+	PkgPassword = "Thisisagoodpassword"
 	Build("../tests/goodpkg.yaml", "../tests/goodpkg.spm")
 }
 
@@ -16,5 +17,4 @@ func TestMakePackageName(t *testing.T) {
 		pn := makePackageName(nm)
 		log.Printf("%s -> %s\n", nm, pn)
 	}
-
 }

@@ -13,6 +13,7 @@ import (
 
 var Workarea = "/tmp"
 var KeepWorkArea bool
+var PkgPassword string
 
 func copyFile(from, to string) error {
 	log.Printf("Copying file %s to %s\n", from, to)
@@ -53,6 +54,10 @@ func makePackageName(cfgname string) string {
 func Build(cfgfile string, outfile string) {
 	log.Printf("Building package for configuration file %s\n", cfgfile)
 	pkg.CreateWorkArea(Workarea)
+	if !KeepWorkArea {
+		defer pkg.CleanupWorkArea()
+	}
+
 	pkgconfig, err := cfg.LoadConfig(cfgfile)
 	if err != nil {
 		return
@@ -90,5 +95,18 @@ func Build(cfgfile string, outfile string) {
 	pkg.Packfiles(spmname, pkg.ContentsDir)
 	log.Printf("Created %s\n", spmbasename)
 
-	pkg.Encrypt(passphrase string, spmbasename , outfile) 
+	encspmname := spmbasename
+	fi, err := os.Stat(outfile)
+	if err == nil {
+		if fi.IsDir() {
+			encspmname = filepath.Join(outfile, spmbasename)
+		}
+	}
+	if len(PkgPassword) < 1 {
+		log.Printf("No password provided for finalization. Cannot create %s\n", encspmname)
+		return
+	}
+	pkg.Encrypt(PkgPassword, spmbasename, encspmname)
+	log.Printf("Created %s\n", encspmname)
+
 }

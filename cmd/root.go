@@ -35,8 +35,6 @@ import (
 var cfgFile string
 var Pubpkg string
 var Pubart string
-var PkiPassphrase string
-var PkgPassword string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -93,12 +91,10 @@ func initConfig() {
 		fmt.Printf("Pkg publish url=%s Artifacts=%s\n", Pubpkg, Pubart)
 
 		viper.SetEnvPrefix("spm")
-		viper.BindEnv("pkipassphrase")
 		viper.BindEnv("pkgpassword")
-		PkgPassword = viper.GetString("pkgpassword")
-		PkiPassphrase = viper.GetString("pkipassphrase")
+		impl.PkgPassword = viper.GetString("pkgpassword")
 		impl.Workarea = viper.GetString("package.workarea")
-		fmt.Printf("PKI passphrase %s Pkg Password %s Workarea %s\n", PkiPassphrase, PkgPassword, impl.Workarea)
+		fmt.Printf("Pkg Password %s Workarea %s\n", PkgPassword, impl.Workarea)
 
 	} else {
 		fmt.Println(err)
