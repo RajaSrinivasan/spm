@@ -10,8 +10,10 @@ var buildCmd = &cobra.Command{
 	Use:   "build",
 	Short: "Build a secure package",
 	Long: `Create a secure package based on the configuration file provided.
-Optionally push the artifact(s) to a distribution server. The argument is the package spec file (ex spec.yaml)`,
-	Args: cobra.MinimumNArgs(1),
+Optionally push the artifact(s) to a distribution server. 
+The first argument is the package spec file (ex spec.yaml)
+Output package name is the second argument`,
+	Args: cobra.MinimumNArgs(2),
 	Run:  build,
 }
 
@@ -20,5 +22,5 @@ func init() {
 }
 
 func build(cmd *cobra.Command, args []string) {
-	impl.Build(args[0])
+	impl.Build(args[0], args[1])
 }

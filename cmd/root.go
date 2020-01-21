@@ -94,7 +94,7 @@ func initConfig() {
 		viper.BindEnv("pkgpassword")
 		impl.PkgPassword = viper.GetString("pkgpassword")
 		impl.Workarea = viper.GetString("package.workarea")
-		fmt.Printf("Pkg Password %s Workarea %s\n", PkgPassword, impl.Workarea)
+		fmt.Printf("Pkg Password %s Workarea %s\n", impl.PkgPassword, impl.Workarea)
 
 	} else {
 		fmt.Println(err)

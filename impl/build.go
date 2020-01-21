@@ -93,9 +93,9 @@ func Build(cfgfile string, outfile string) {
 	spmbasename := makePackageName(cfgfile)
 	spmname := filepath.Join(pkg.WorkDir, spmbasename)
 	pkg.Packfiles(spmname, pkg.ContentsDir)
-	log.Printf("Created %s\n", spmbasename)
+	log.Printf("Created %s\n", spmname)
 
-	encspmname := spmbasename
+	encspmname := outfile
 	fi, err := os.Stat(outfile)
 	if err == nil {
 		if fi.IsDir() {
@@ -106,7 +106,7 @@ func Build(cfgfile string, outfile string) {
 		log.Printf("No password provided for finalization. Cannot create %s\n", encspmname)
 		return
 	}
-	pkg.Encrypt(PkgPassword, spmbasename, encspmname)
+	pkg.Encrypt(PkgPassword, spmname, encspmname)
 	log.Printf("Created %s\n", encspmname)
 
 }
