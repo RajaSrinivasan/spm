@@ -1,0 +1,14 @@
+package:
+    name: ServicePack
+    id: c2ee92dd-8699-47d1-a68f-228b625625b3
+    version: "1.2"
+    hostname: Rajas-MBP.fios-router.home
+    created: 2020-01-19T08:06:17.51023-05:00
+contents: [{from: from1, to: /var/tmp/from1}, {from: /opt/from2/, to: /opt/to2}]
+preinstall:
+  - step1
+  - step2
+install:
+  - step1
+  - step2
+postinstall: []

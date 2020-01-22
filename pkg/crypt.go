@@ -1,13 +1,13 @@
 package pkg
 
 import (
-	"bufio"
 	"bytes"
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/rand"
 	"crypto/sha256"
 	"errors"
+	"io"
 	"io/ioutil"
 	"log"
 	"os"
@@ -28,6 +28,7 @@ func generateInitVector() []byte {
 	if err != nil {
 		log.Printf("%s\n", err)
 	}
+	log.Printf("IV: %x\n", iv)
 	return iv
 }
 
@@ -60,16 +61,12 @@ func Encrypt(passphrase string, from string, to string) error {
 	ofile.Write(secret)
 	ofile.Write(iv)
 
-	//log.Printf("IV generated: %x\n", iv)
-	//str := cipher.NewCFBEncrypter(encalg, iv)
-
 	str := cipher.NewOFB(encalg, iv)
 
 	idata, _ := ioutil.ReadAll(ifile)
 	odata := make([]byte, len(idata))
 	str.XORKeyStream(odata, idata)
-	//log.Printf("%s\n", string(idata))
-	//log.Printf("%x\n", odata)
+
 	ofile.Write(odata)
 
 	return nil
@@ -94,47 +91,54 @@ func Decrypt(passphrase string, from string, to string) error {
 
 	secret := generateKey(passphrase)
 	filepass := make([]byte, len(secret))
-
-	bufr := bufio.NewReader(ifile)
-	_, err = bufr.Read(filepass)
-
-	//ifile.Read(filepass)
-	//log.Printf("Password:  %x\n", secret)
-	//log.Printf("From file: %x\n", filepass)
-
+	bytesin, err := io.ReadFull(ifile, filepass)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if Verbose {
+		log.Printf("%d bytes read for password\n", bytesin)
+	}
 	res := bytes.Compare(secret, filepass)
 	if res != 0 {
 		log.Printf("Passphrase comparison failed\n")
 		return errors.New("Passphrase comparison failed")
 	}
+
 	iv := make([]byte, aes.BlockSize)
-	_, err = bufr.Read(iv)
-	//log.Printf("IV loaded: %x\n", iv)
+	bytesin, err = io.ReadFull(ifile, iv)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if Verbose {
+		log.Printf("%d bytes read for IV\n", bytesin)
+		log.Printf("IV: %x\n", iv)
+	}
 	encalg, err := aes.NewCipher(filepass)
 	if err != nil {
 		log.Printf("%s\n", err)
 		return err
 	}
 	st, _ := os.Stat(from)
-	//log.Printf("Size of input file %d\n", st.Size())
 	buf := make([]byte, int(st.Size())-len(secret)-len(iv))
-	//n, err := ifile.Read(buf)
-	//log.Printf("%d bytes read. %s\n", n, err)
-	bufr.Read(buf)
-	//log.Printf("Encrypted data:\n,%x\n", buf)
+	nbytesin, err := io.ReadFull(ifile, buf)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if Verbose {
+		log.Printf("%d bytes read\n", nbytesin)
+	}
 	obuf := make([]byte, len(buf))
 
 	str := cipher.NewOFB(encalg, iv)
-	//str := cipher.NewCFBDecrypter(encalg, iv)
-
 	str.XORKeyStream(obuf, buf)
 
-	_, err = ofile.Write(obuf)
+	nbytesout, err := ofile.Write(obuf)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if Verbose {
+		log.Printf("%d bytes written\n", nbytesout)
+	}
 	ofile.Close()
-
-	//log.Printf("%s\n", string(obuf))
-	//log.Printf("%x\n", obuf)
-	//log.Printf("%d bytes\n%s", n, err)
-
 	return nil
 }

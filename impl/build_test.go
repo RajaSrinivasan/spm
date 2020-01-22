@@ -6,9 +6,11 @@ import (
 )
 
 func TestBuild(t *testing.T) {
-	Build("../tests/spm.yaml", "../tests/spm.spm")
+	//Build("../tests/spm.yaml", "../tests/spm.spm")
+	KeepWorkArea = true
 	PkgPassword = "Thisisagoodpassword"
-	Build("../tests/goodpkg.yaml", "../tests/goodpkg.spm")
+	//Build("../tests/goodpkg.yaml", "../tests/goodpkg.spm")
+	Build("../systest/sp.yaml", "../systest/sp.spm")
 }
 
 func TestMakePackageName(t *testing.T) {

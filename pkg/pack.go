@@ -66,3 +66,44 @@ func Package(bn string) error {
 	err = Packfiles(filepath.Join(workArea, bn+"_art.spm"), filepath.Join(workArea, "artifacts"))
 	return err
 }
+
+func UnPackfiles(fn, dir string) error {
+
+	pkgfilename := fn
+	pkgfile, err := os.Open(pkgfilename)
+	if err != nil {
+		log.Fatal(err)
+		return err
+	}
+	defer pkgfile.Close()
+
+	gzreader, err := gzip.NewReader(pkgfile)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer gzreader.Close()
+
+	tarReader := tar.NewReader(gzreader)
+
+	for {
+		hdr, err := tarReader.Next()
+		if err == io.EOF {
+			break // End of archive
+		}
+		if err != nil {
+			log.Fatal(err)
+		}
+		log.Printf("Exxtracting %s:\n", hdr.Name)
+		outname := filepath.Join(dir, hdr.Name)
+		outfile, err := os.Create(outname)
+		if err != nil {
+			log.Fatal(err)
+		}
+		if _, err := io.Copy(outfile, tarReader); err != nil {
+			log.Fatal(err)
+		}
+		outfile.Close()
+	}
+
+	return nil
+}

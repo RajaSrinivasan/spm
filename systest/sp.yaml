@@ -1,0 +1,16 @@
+
+package:
+    name: ServicePack
+    version: 1.2
+
+contents:
+    - from: /Volumes/Dev1/Ref/Books/acsac.pdf 
+      to: /tmp/acsac.pdf 
+
+
+preinstall:
+    - step1
+    - step2
+install:
+    - step1
+    - step2

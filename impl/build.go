@@ -15,12 +15,14 @@ var Workarea = "/tmp"
 var KeepWorkArea bool
 var PkgPassword string
 
+const ManifestFileName = "Packagefile"
+
 func copyFile(from, to string) error {
 	log.Printf("Copying file %s to %s\n", from, to)
 	fullname, _ := filepath.Abs(from)
 	infile, err := os.Open(from)
 	if err != nil {
-		log.Printf("Failed to open %s\n", fullname)
+		log.Fatalf("Failed to open %s\n", fullname)
 		return err
 	}
 	defer infile.Close()
@@ -64,7 +66,7 @@ func Build(cfgfile string, outfile string) {
 	}
 
 	assembleFiles(pkg.ContentsDir, pkgconfig)
-	var pkgcontent = cfg.Content{From: "Packagefile", To: "Packagefile"}
+	var pkgcontent = cfg.Content{From: ManifestFileName, To: ManifestFileName}
 	pkgconfig.Contents = append(pkgconfig.Contents, pkgcontent)
 
 	pvtkeyfile := filepath.Join(pkg.WorkDir, pkg.DefaultPrivateKeyFileName)
@@ -82,7 +84,7 @@ func Build(cfgfile string, outfile string) {
 	log.Printf("Files: %v\n", contnames)
 	pkg.SignFiles(contnames, pvtkeyfile)
 
-	pkgfilename := filepath.Join(pkg.ContentsDir, "Packagefile")
+	pkgfilename := filepath.Join(pkg.ContentsDir, ManifestFileName)
 	pkgconfig.SaveManifest(pkgfilename)
 	log.Printf("Saved manifest %s\n", pkgfilename)
 

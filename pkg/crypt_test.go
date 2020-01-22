@@ -26,9 +26,16 @@ func TestEncryptFile(t *testing.T) {
 	Encrypt("Thisisabadpassphrase", "crypt.go", "crypt_go.enc")
 }
 
+func TestEncryptFileBig(t *testing.T) {
+	Encrypt("Thisisabadpassph", "/Users/rajasrinivasan/Prj/work/sp_clear.spm", "../tests/sp.spm")
+}
+
 func TestDecryptFile(t *testing.T) {
 	Decrypt("Thisisabadpassphrase", "crypt_test_go.enc", "crypt_test_go")
 	Decrypt("Thisisabadpassph", "crypt_test_go.enc", "crypt_test_go")
-
 	Decrypt("Thisisabadpassphrase", "crypt_go.enc", "crypt_go")
+}
+
+func TestDecryptFileBig(t *testing.T) {
+	Decrypt("Thisisabadpassph", "../tests/sp.spm", "../tests/sp_clear.spm")
 }
