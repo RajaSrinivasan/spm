@@ -9,8 +9,9 @@ contents:
 
 
 preinstall:
-    - step1
-    - step2
-install:
-    - step1
-    - step2
+    - go version
+    - ls -l /tmp
+
+postinstall:
+    - ls /tmp
+    - python --version

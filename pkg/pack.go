@@ -93,7 +93,7 @@ func UnPackfiles(fn, dir string) error {
 		if err != nil {
 			log.Fatal(err)
 		}
-		log.Printf("Exxtracting %s:\n", hdr.Name)
+		log.Printf("Extracting %s\n", hdr.Name)
 		outname := filepath.Join(dir, hdr.Name)
 		outfile, err := os.Create(outname)
 		if err != nil {

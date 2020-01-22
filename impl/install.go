@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"os/exec"
 	"path/filepath"
+	"strings"
 
 	"../cfg"
 	"../pkg"
@@ -56,6 +58,45 @@ func showContents(filecfg *cfg.Config) {
 	}
 }
 
+func execCommand(cmdstr string) error {
+	cmdsplit := strings.Fields(cmdstr)
+	cmd := exec.Command(cmdsplit[0], cmdsplit[1:]...)
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		log.Printf("Executing %s\n", cmdstr)
+		log.Fatal(err)
+	}
+	log.Printf("%s\n", output)
+	return nil
+}
+
+func executeSteps(steps []string) error {
+	for _, stepstr := range steps {
+		err := execCommand(stepstr)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func installFile(from, to string) error {
+	cmd := fmt.Sprintf("cp -p %s %s", from, to)
+	err := execCommand(cmd)
+	return err
+}
+
+func installFiles(filecfg *cfg.Config) {
+	for _, c := range filecfg.Contents {
+		fname := filepath.Base(c.From)
+		fromname := filepath.Join(pkg.ContentsDir, fname)
+		err := installFile(fromname, c.To)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+}
+
 func Install(pkgfile string) {
 	fullname, _ := filepath.Abs(pkgfile)
 	log.Printf("Installing package %s\n", fullname)
@@ -84,5 +125,16 @@ func Install(pkgfile string) {
 	if ShowOption {
 		showContents(filecfg)
 		return
+	}
+	log.Printf("Executing Preinstall steps\n")
+	err = executeSteps(filecfg.Preinstall)
+	if err != nil {
+		log.Fatal(err)
+	}
+	installFiles(filecfg)
+	log.Printf("Executing Postinstall steps\n")
+	err = executeSteps(filecfg.Postinstall)
+	if err != nil {
+		log.Fatal(err)
 	}
 }
