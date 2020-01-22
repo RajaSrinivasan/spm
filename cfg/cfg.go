@@ -27,7 +27,6 @@ type Config struct {
 	Package     Package   `yaml:"package"`
 	Contents    []Content `yaml:"contents,flow"`
 	Preinstall  []string  `yaml:"preinstall"`
-	Install     []string  `yaml:"install"`
 	Postinstall []string  `yaml:"postinstall"`
 }
 
@@ -53,10 +52,6 @@ func LoadConfig(cfgfile string) (*Config, error) {
 
 	if len(cfg.Postinstall) == 0 {
 		log.Printf("No Postinstall steps to execute\n")
-	}
-
-	if len(cfg.Install) == 0 {
-		log.Printf("No Install steps specified. Only file delivery\n")
 	}
 
 	return cfg, nil

@@ -10,3 +10,10 @@ func TestInstall(t *testing.T) {
 	PkgPassword = "Thisisagoodpassword"
 	Install("../systest/sp.spm")
 }
+
+func TestInstallShow(t *testing.T) {
+	//Install("../tests/goodpkg.spm")
+	ShowOption = true
+	PkgPassword = "Thisisagoodpassword"
+	Install("../systest/sp.spm")
+}

@@ -16,6 +16,7 @@ var installCmd = &cobra.Command{
 }
 
 func init() {
+	installCmd.PersistentFlags().BoolVar(&impl.ShowOption, "show", false, "extract and show the contents. do not install. Implies --keep")
 	rootCmd.AddCommand(installCmd)
 }
 
