@@ -13,6 +13,61 @@ High level requirements for such a subsystem then is to:
 - a mechanism to authenticate each of the files at the destination
 - driving the execution of the installation steps
 
+## Installation
+
+### Systemwide Configuration
+
+A configuration file is used to specify parameters applicable to all the packages. An example is:
+
+```
+#-----------------------------------------------------------------------
+#     This is an example configuration file systemwide for spm.
+#     Typical location $HOME/.spm.yaml
+#     can be overridden with the --config flag
+#-----------------------------------------------------------------------
+#     Environment Variables
+#     SPM_PKGPASSWORD   - the password for the encrytion of the spm file
+#-----------------------------------------------------------------------
+pubpkg: https://drive.google.com/
+pubart: https://drive.aws.com/
+
+package:
+    format: tgz
+    workarea: /tmp
+```
+
+Of the parameters above, the workarea is sometimes overwritten to point to different partitions - in the case of embedded systems with limited storage e.g. on sdcards.
+
+## Configuration of individual packages
+
+For each package that needs built, spm accepts a configuration file similar to:
+
+```
+
+package:
+    name: ServicePack
+    version: 1.2
+
+contents:
+    - from: /Volumes/Dev1/Ref/Books/acsac.pdf 
+      to: /tmp/acsac.pdf 
+
+
+preinstall:
+    - go version
+    - ls -l /tmp
+
+postinstall:
+    - ls /tmp
+    - python --version
+```
+### Section: package
+Mostly intended for documentation.
+### Section: contents
+The pair of from and to can be repeated any number of times in the contents section.
+### Sections: preinstall and postinstall
+Each entry is a shell command applicable in the target system - typically a linux system. Depending on the context during installation, the commands may have to provide complete paths.
+
 ## Usage
 
 ../bin/spm
@@ -76,8 +131,6 @@ In the following package, one file is packaged and distributed to the target sys
 shell commands specified to be executed before the file installation (Preinstall) and another set to execute after the file installations(Postinstall).
 
 ```
-cat systest/sp.yaml
-
 package:
     name: ServicePack
     version: 1.2
