@@ -1,12 +1,17 @@
 
 package:
     name: ServicePack
-    version: 1.2
+    version: 1.3
 
 contents:
-    - from: /Volumes/Dev1/Ref/Books/acsac.pdf 
+    - from: acsac.pdf 
       to: /tmp/acsac.pdf 
-
+    - from: usb_ddk.pdf 
+      to: /tmp/usbddk.pdf 
+    - from: build.sh
+      to: /tmp/build.sh
+    - from: install.sh
+      to: /tmp/install.sh
 
 preinstall:
     - go version
@@ -14,4 +19,5 @@ preinstall:
 
 postinstall:
     - ls /tmp
-    - python --version
+    - chmod a+x /tmp/install.sh
+    - /tmp/install.sh
