@@ -66,7 +66,9 @@ func execCommand(cmdstr string) error {
 		log.Printf("Executing %s\n", cmdstr)
 		log.Fatal(err)
 	}
-	log.Printf("%s\n", output)
+	if Verbose {
+		log.Printf("Executing: %s\n%s", cmdstr, output)
+	}
 	return nil
 }
 
@@ -83,6 +85,9 @@ func executeSteps(steps []string) error {
 func installFile(from, to string) error {
 	cmd := fmt.Sprintf("cp -p %s %s", from, to)
 	err := execCommand(cmd)
+	if err == nil {
+		log.Printf("Executed: %s", cmd)
+	}
 	return err
 }
 

@@ -11,6 +11,7 @@ import (
 	"../pkg"
 )
 
+var Verbose = false
 var Workarea = "/tmp"
 var KeepWorkArea bool
 var PkgPassword string

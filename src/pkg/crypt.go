@@ -39,15 +39,13 @@ func Encrypt(passphrase string, from string, to string) error {
 
 	ofile, err := os.Create(to)
 	if err != nil {
-		log.Printf("%s\n", err)
-		return err
+		log.Fatal(err)
 	}
 	defer ofile.Close()
 
 	ifile, err := os.Open(from)
 	if err != nil {
-		log.Printf("%s\n", err)
-		return err
+		log.Fatal(err)
 	}
 	defer ifile.Close()
 
@@ -79,15 +77,13 @@ func Decrypt(passphrase string, from string, to string) error {
 
 	ofile, err := os.Create(to)
 	if err != nil {
-		log.Printf("%s\n", err)
-		return err
+		log.Fatal(err)
 	}
 	defer ofile.Close()
 
 	ifile, err := os.Open(from)
 	if err != nil {
-		log.Printf("%s\n", err)
-		return err
+		log.Fatal(err)
 	}
 	defer ifile.Close()
 
