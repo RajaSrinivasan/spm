@@ -262,3 +262,17 @@ spm839508907
 
 2020/01/22 14:47:17 Removed /tmp/spm839508907
 ```
+
+## Design Choices
+
+### Digital Signatures for individual files
+
+spm generates a public and private key pair for every invocation. The private key is used to generate signature files for each of the content files. Then the private key file is discarded but the public key is saved in the package. Any tampering of any files then will be detected when the contents are authenticated with the signature files. Further details can be gleaned from sign.go.
+
+### Container File
+
+All the contents are packaged up in a compressed tar file ie .tgz. The detailed format can be gleaned from pack.go.
+
+### Encryption of the container file
+
+The current implementation uses the Output Feedback Mode [OFB](https://csrc.nist.gov/publications/detail/sp/800-38a/final). Further details can be gleaned from crypt.go.
