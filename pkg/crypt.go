@@ -28,7 +28,9 @@ func generateInitVector() []byte {
 	if err != nil {
 		log.Printf("%s\n", err)
 	}
-	log.Printf("IV: %x\n", iv)
+	if Verbose {
+		log.Printf("IV: %x\n", iv)
+	}
 	return iv
 }
 

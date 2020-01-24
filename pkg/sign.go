@@ -16,7 +16,7 @@ import (
 	"golang.org/x/crypto/ssh"
 )
 
-var Verbose = true
+var Verbose = false
 
 const rsaKeySize = 2048
 const signatureFileType = ".sig"
