@@ -42,6 +42,10 @@ func LoadPublicKey(pubkeyfile string) (*rsa.PublicKey, error) {
 }
 
 func Authenticate(file string, sigfile string, pubkey *rsa.PublicKey) error {
+	if pubkey == nil {
+		log.Fatal("No public key provided")
+	}
+
 	hashed, _ := fileHash(file)
 	sigbytes, _ := ioutil.ReadFile(sigfile)
 	err := rsa.VerifyPKCS1v15(pubkey, crypto.SHA256, hashed, sigbytes)
@@ -49,7 +53,7 @@ func Authenticate(file string, sigfile string, pubkey *rsa.PublicKey) error {
 		log.Printf("Verifying %s using signature: %s - %s\n", file, sigfile, err)
 		return err
 	}
-	log.Printf("Verified the signature %s of file %s\n", sigfile, file)
+	log.Printf("Authenticated the signature %s of file %s\n", sigfile, file)
 	return nil
 }
 
