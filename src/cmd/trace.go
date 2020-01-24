@@ -1,11 +1,11 @@
 package cmd
 // Go package generator
 // File: cmd.h
-const buildTime = "Fri Jan 24 2020 04:20:20"
+const buildTime = "Fri Jan 24 2020 13:19:53"
 const versionMajor = 0
 const versionMinor = 2
 const versionBuild = 1
-const repoURL = "git@gitlab.com:privatetutor/projectlets/go.git"
+const repoURL = "https://github.com/RajaSrinivasan/spm.git"
 const branchName = "master"
-const shortCommitId = "f03ca61"
-const longCommitId = "f03ca61233e1e6776d0dbefbdf3c36d1ddf61e9e"
+const shortCommitId = "fac6260"
+const longCommitId = "fac626086902b99a370ccbe14b777602ee69e1a5"
