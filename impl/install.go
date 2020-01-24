@@ -89,10 +89,12 @@ func installFile(from, to string) error {
 func installFiles(filecfg *cfg.Config) {
 	for _, c := range filecfg.Contents {
 		fname := filepath.Base(c.From)
-		fromname := filepath.Join(pkg.ContentsDir, fname)
-		err := installFile(fromname, c.To)
-		if err != nil {
-			log.Fatal(err)
+		if fname != "Packagefile" {
+			fromname := filepath.Join(pkg.ContentsDir, fname)
+			err := installFile(fromname, c.To)
+			if err != nil {
+				log.Fatal(err)
+			}
 		}
 	}
 }

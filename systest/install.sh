@@ -1,3 +1,3 @@
 #!/bin/bash
 
-cp /tmp/usb_ddk.pdf /usr/doc
+cp /tmp/usbddk.pdf /var/tmp
