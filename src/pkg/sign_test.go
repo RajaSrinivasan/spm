@@ -56,19 +56,19 @@ func TestSignFile(t *testing.T) {
 }
 
 func TestSign(t *testing.T) {
-	keyfile, err := LoadPrivateKey("../tests/private.pem")
+	keyfile, err := LoadPrivateKey("../../tests/private.pem")
 	if err != nil {
 		log.Panic(err)
 	}
-	err = Sign("sign.go", "../tests/sign.go.sig", keyfile)
+	err = Sign("sign.go", "/tmp/sign.go.sig", keyfile)
 	if err == nil {
 		log.Printf("Signed\n")
 	}
-	err = Sign("sign_test.go", "../tests/sign_test.go.sig", keyfile)
+	err = Sign("sign_test.go", "/tmp/tests/sign_test.go.sig", keyfile)
 	if err == nil {
 		log.Printf("Signed\n")
 	}
-	err = Sign("sign_test.go", "../tests/sign_test.go.sig", nil)
+	err = Sign("sign_test.go", "/tmp/tests/sign_test.go.sig", nil)
 	if err == nil {
 		log.Printf("Signed\n")
 	}

@@ -209,7 +209,9 @@ func fileHash(file string) ([]byte, error) {
 }
 
 func Sign(file string, sigfile string, pvt *rsa.PrivateKey) error {
-
+	if pvt == nil {
+		log.Fatal("No private key provided")
+	}
 	log.Printf("Signing %s creating %s\n", file, sigfile)
 	datahash, _ := fileHash(file)
 	if Verbose {
