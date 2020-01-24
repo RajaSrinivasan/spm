@@ -9,7 +9,7 @@ var goodpassphrase = "Thisisagoodpassphrase"
 
 func TestGenerateKeys(t *testing.T) {
 	t.Log("Testing Key generation")
-	err := GenerateKeys("../tests/private.pem", "../tests/public.pem")
+	err := GenerateKeys("/tmp/private.pem", "/tmp/public.pem")
 	if err == nil {
 		log.Printf("Generated\n")
 	}
@@ -17,7 +17,7 @@ func TestGenerateKeys(t *testing.T) {
 
 func TestGenerateKeysWithPassphrase(t *testing.T) {
 	t.Log("Testing Key generation")
-	err := generateKeysWithPassphrase("pwd_private.pem", "pwd_public.pem", goodpassphrase)
+	err := generateKeysWithPassphrase("/tmp/pwd_private.pem", "/tmp/pwd_public.pem", goodpassphrase)
 	if err == nil {
 		log.Printf("Generated\n")
 	}
@@ -25,33 +25,34 @@ func TestGenerateKeysWithPassphrase(t *testing.T) {
 
 func TestLoadPrivateKeyfile(t *testing.T) {
 	t.Log("Testing Loading private pem files")
-	privkey, err := LoadPrivateKey("../tests/private.pem")
+	privkey, err := LoadPrivateKey("../../tests/private.pem")
 	if err == nil {
 		showPrivateKey(privkey)
 	}
-	privkey, _ = LoadPrivateKey("../tests/private_missing.pem")
+	privkey, _ = LoadPrivateKey("../../tests/private_missing.pem")
 
 }
 
 func TestLoadPrivateKeyfileWithPassphrase(t *testing.T) {
 	t.Log("Testing Loading private pem files")
-	privkey, err := loadPrivateKeyWithPassphrase("pwd_private.pem", goodpassphrase)
+	TestGenerateKeysWithPassphrase(t)
+	privkey, err := loadPrivateKeyWithPassphrase("/tmp/pwd_private.pem", goodpassphrase)
 	if err == nil {
 		showPrivateKey(privkey)
 	}
 }
 
 func TestSignFile(t *testing.T) {
-	err := SignFile("sign.go", "../tests/sign.go.sig", "../tests/private.pem")
+	err := SignFile("sign.go", "/tmp/sign.go.sig", "../../tests/private.pem")
 	if err == nil {
 		log.Printf("Signed\n")
 	}
-	err = SignFile("sign_test.go", "../tests/sign_test.go.sig", "../tests/private.pem")
+	err = SignFile("sign_test.go", "/tmp/sign_test.go.sig", "../../tests/private.pem")
 	if err == nil {
 		log.Printf("Signed\n")
 	}
-	SignFile("sign_test.go", "../tests/sign_test1.go.sig", "../tests/bad_private.pem")
-	SignFile("sign_test.go", "../tests/sign_test2.go.sig", "../tests/bad_private.pem")
+	SignFile("sign_test.go", "/tmp/sign_test1.go.sig", "../../tests/bad_private.pem")
+	SignFile("sign_test.go", "/tmp/sign_test2.go.sig", "../../tests/bad_private.pem")
 }
 
 func TestSign(t *testing.T) {

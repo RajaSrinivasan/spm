@@ -2,6 +2,7 @@ package pkg
 
 import (
 	"log"
+	"path/filepath"
 	"testing"
 )
 
@@ -22,20 +23,23 @@ func TestIV(t *testing.T) {
 }
 
 func TestEncryptFile(t *testing.T) {
-	Encrypt("Thisisabadpassph", "crypt_test.go", "crypt_test_go.enc")
-	Encrypt("Thisisabadpassphrase", "crypt.go", "crypt_go.enc")
+	Encrypt("Thisisabadpassph", "crypt_test.go", "/tmp/crypt_test_go.enc")
+	Encrypt("Thisisabadpassphrase", "crypt.go", "/tmp/crypt_go.enc")
 }
 
 func TestEncryptFileBig(t *testing.T) {
-	Encrypt("Thisisabadpassph", "/Users/rajasrinivasan/Prj/work/sp_clear.spm", "../tests/sp.spm")
+	TestPackfilesBig(t)
+	Encrypt("Thisisabadpassph", filepath.Join(WorkDir, "bigpack.tgz"), filepath.Join(WorkDir, "bigpack.spm"))
 }
 
 func TestDecryptFile(t *testing.T) {
-	Decrypt("Thisisabadpassphrase", "crypt_test_go.enc", "crypt_test_go")
-	Decrypt("Thisisabadpassph", "crypt_test_go.enc", "crypt_test_go")
-	Decrypt("Thisisabadpassphrase", "crypt_go.enc", "crypt_go")
+	TestEncryptFile(t)
+	Decrypt("Thisisabadpassphrase", "/tmp/crypt_test_go.enc", "/tmp/crypt_test_go")
+	Decrypt("Thisisabadpassph", "/tmp/crypt_test_go.enc", "/tmp/crypt_test_go")
+	Decrypt("Thisisabadpassphrase", "/tmp/crypt_go.enc", "/tmp/crypt_go")
 }
 
 func TestDecryptFileBig(t *testing.T) {
-	Decrypt("Thisisabadpassph", "../tests/sp.spm", "../tests/sp_clear.spm")
+	TestEncryptFileBig(t)
+	Decrypt("Thisisabadpassph", filepath.Join(WorkDir, "bigpack.spm"), "/tmp/bigpack.tgz")
 }

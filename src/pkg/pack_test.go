@@ -7,6 +7,8 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+
+	homedir "github.com/mitchellh/go-homedir"
 )
 
 func copyFile(fn string) {
@@ -26,15 +28,17 @@ func createFile(fn string) {
 }
 
 func TestPackage(t *testing.T) {
-	folder := "/Users/rajasrinivasan/tmp"
-	CreateWorkArea(folder)
-	createFile(filepath.Join(workArea, "package", "a.sig"))
-	createFile(filepath.Join(workArea, "package", "b.sig"))
-	createFile(filepath.Join(workArea, "package", "c.sig"))
 
-	createFile(filepath.Join(workArea, "artifacts", "a.data"))
-	createFile(filepath.Join(workArea, "artifacts", "b.data"))
-	createFile(filepath.Join(workArea, "artifacts", "c.data"))
+	folder, _ := homedir.Dir()
+	CreateWorkArea(filepath.Join(folder, "tmp"))
+
+	createFile(filepath.Join(ContentsDir, "a.sig"))
+	createFile(filepath.Join(ContentsDir, "b.sig"))
+	createFile(filepath.Join(ContentsDir, "c.sig"))
+
+	createFile(filepath.Join(ArtifactsDir, "a.data"))
+	createFile(filepath.Join(ArtifactsDir, "b.data"))
+	createFile(filepath.Join(ArtifactsDir, "c.data"))
 
 	Package("bn")
 }
@@ -52,14 +56,13 @@ func TestPackfiles(t *testing.T) {
 
 func TestPackfilesBig(t *testing.T) {
 	CreateWorkArea("/tmp")
-	copyFile("/Volumes/Dev1/Ref/Books/usb_ddk.pdf")
-	copyFile("/Volumes/Dev1/Ref/Books/acsac.pdf")
-	copyFile("/Volumes/Dev1/Ref/Books/manual.pdf")
-	Packfiles("/Users/rajasrinivasan/Prj/work/bigpack.tgz", ContentsDir)
-	CleanupWorkArea()
+	copyFile("../systest/usb_ddk.pdf")
+	copyFile("../systest//acsac.pdf")
+	Packfiles(filepath.Join(WorkDir, "bigpack.tgz"), ContentsDir)
+
 }
 
 func TestUnPackfiles(t *testing.T) {
-	CreateWorkArea("/tmp")
-	UnPackfiles("/Users/rajasrinivasan/Prj/work/bigpack.tgz", ContentsDir)
+	TestPackfilesBig(t)
+	UnPackfiles(filepath.Join(WorkDir, "bigpack.tgz"), "/tmp")
 }

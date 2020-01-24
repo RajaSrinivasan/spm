@@ -1,15 +1,24 @@
 package pkg
 
 import (
+	"log"
+	"path/filepath"
 	"testing"
+
+	homedir "github.com/mitchellh/go-homedir"
 )
 
 func TestCreateWorkArea(t *testing.T) {
 
 	CreateWorkArea("/tmp")
 	CleanupWorkArea()
-	CreateWorkArea("/Users/rajasrinivasan/tmp")
-	//CleanupWorkArea()
+	home, err := homedir.Dir()
+	if err == nil {
+		hometemp := filepath.Join(home, "tmp")
+		CreateWorkArea(hometemp)
+	} else {
+		log.Printf("%s", err)
+	}
 
 }
 

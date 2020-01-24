@@ -1,6 +1,6 @@
 SOURCES=$(wildcard *.go)
 EXEC=spm
-BINARIES=../bin
+BINARIES=../../bin
 
 all: $(SOURCES)
 	go build -o $(BINARIES)/$(EXEC)

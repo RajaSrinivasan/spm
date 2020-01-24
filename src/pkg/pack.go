@@ -59,11 +59,11 @@ func Packfiles(fn, dir string) error {
 }
 
 func Package(bn string) error {
-	err := Packfiles(filepath.Join(workArea, bn+".spm"), filepath.Join(workArea, "package"))
+	err := Packfiles(filepath.Join(WorkDir, bn+".spm"), ContentsDir)
 	if err != nil {
 		return err
 	}
-	err = Packfiles(filepath.Join(workArea, bn+"_art.spm"), filepath.Join(workArea, "artifacts"))
+	err = Packfiles(filepath.Join(WorkDir, bn+"_art.spm"), ArtifactsDir)
 	return err
 }
 
