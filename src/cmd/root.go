@@ -23,6 +23,7 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 	"os"
 
 	"../impl"
@@ -76,8 +77,8 @@ func initConfig() {
 		}
 		fmt.Printf("Home dir is %s\n", home)
 		// Search config in home directory with name ".spm" (without extension).
-		//viper.AddConfigPath(home)
-		viper.AddConfigPath("./example")
+		viper.AddConfigPath(home)
+		//viper.AddConfigPath("./example")
 		viper.SetConfigName(".spm")
 	}
 
@@ -94,10 +95,8 @@ func initConfig() {
 		viper.BindEnv("pkgpassword")
 		impl.PkgPassword = viper.GetString("pkgpassword")
 		impl.Workarea = viper.GetString("package.workarea")
-		fmt.Printf("Pkg Password %s Workarea %s\n", impl.PkgPassword, impl.Workarea)
-
+		//fmt.Printf("Pkg Password %s Workarea %s\n", impl.PkgPassword, impl.Workarea)
 	} else {
-		fmt.Println(err)
-		os.Exit(1)
+		log.Printf("Unable to load config (%s). Using defaults", err)
 	}
 }
