@@ -18,7 +18,7 @@ func TestCreateWorkArea(t *testing.T) {
 		hometemp := filepath.Join(home, "tmp")
 		_, err := os.Stat(hometemp)
 		if os.IsNotExist(err) {
-			os.Mkdir(hometemp)
+			os.Mkdir(hometemp, os.ModePerm)
 		}
 		CreateWorkArea(hometemp)
 	} else {
