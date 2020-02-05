@@ -8,8 +8,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"../cfg"
-	"../pkg"
+	"github.com/RajaSrinivasan/spm/cfg"
+	"github.com/RajaSrinivasan/spm/pkg"
 )
 
 var ShowOption bool

@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"../impl"
+	"github.com/RajaSrinivasan/spm/impl"
 	"github.com/spf13/cobra"
 )
 

@@ -7,8 +7,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"../cfg"
-	"../pkg"
+	"github.com/RajaSrinivasan/spm/cfg"
+	"github.com/RajaSrinivasan/spm/pkg"
 )
 
 var Verbose = false

@@ -26,7 +26,7 @@ import (
 	"log"
 	"os"
 
-	"../impl"
+	"github.com/RajaSrinivasan/spm/impl"
 	"github.com/spf13/cobra"
 
 	homedir "github.com/mitchellh/go-homedir"

@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	"../pkg"
+	"github.com/RajaSrinivasan/spm/pkg"
 	uuid "github.com/google/uuid"
 	yaml "gopkg.in/yaml.v3"
 )
