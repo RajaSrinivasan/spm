@@ -29,8 +29,14 @@ func createFile(fn string) {
 
 func TestPackage(t *testing.T) {
 
-	folder, _ := homedir.Dir()
-	CreateWorkArea(filepath.Join(folder, "tmp"))
+	home, _ := homedir.Dir()
+	hometemp := filepath.Join(home, "tmp")
+	_, err := os.Stat(hometemp)
+	if os.IsNotExist(err) {
+		os.Mkdir(hometemp, os.ModePerm)
+	}
+
+	CreateWorkArea(hometemp)
 
 	createFile(filepath.Join(ContentsDir, "a.sig"))
 	createFile(filepath.Join(ContentsDir, "b.sig"))
