@@ -1,4 +1,4 @@
-module github.com/RajaSrinivasa/spm
+module github.com/RajaSrinivasan/spm
 
 go 1.13
 
