@@ -2,6 +2,7 @@ package pkg
 
 import (
 	"log"
+	"os"
 	"path/filepath"
 	"testing"
 
@@ -15,6 +16,10 @@ func TestCreateWorkArea(t *testing.T) {
 	home, err := homedir.Dir()
 	if err == nil {
 		hometemp := filepath.Join(home, "tmp")
+		fi,err := os.Stat(hometemp)
+		if os.IsNotExist(err) [
+			os.Mkdir(hometemp)
+		]
 		CreateWorkArea(hometemp)
 	} else {
 		log.Printf("%s", err)
