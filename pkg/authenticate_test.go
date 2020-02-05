@@ -7,13 +7,13 @@ import (
 )
 
 var pubKeyFile = "/Users/rajasrinivasan/.ssh/id_rsa.pub"
-var pubKeyPEM = "../../tests/public.pem"
+var pubKeyPEM = "../tests/public.pem"
 
 func TestLoadPrublicKey(t *testing.T) {
 	pubkey, _ := LoadPublicKey(pubKeyPEM)
 	log.Printf("%v\n", pubkey)
 	pubkey, _ = LoadPublicKey("public.pem")
-	pubkey, _ = LoadPublicKey("../../tests/badpublic.pem")
+	pubkey, _ = LoadPublicKey("../tests/badpublic.pem")
 
 }
 
@@ -36,9 +36,9 @@ func TestAuthenticateFiles(t *testing.T) {
 	wd, _ := os.Getwd()
 	defer os.Chdir(wd)
 
-	copyFile("../../tests/lsfiles.txt")
-	copyFile("../../tests/private.pem")
-	copyFile("../../tests/public.pem")
+	copyFile("../tests/lsfiles.txt")
+	copyFile("../tests/private.pem")
+	copyFile("../tests/public.pem")
 
 	files := []string{"lsfiles.txt", "private.pem", "public.pem"}
 	os.Chdir(ContentsDir)

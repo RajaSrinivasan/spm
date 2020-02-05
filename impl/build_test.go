@@ -13,7 +13,7 @@ func TestBuild(t *testing.T) {
 	wd, _ := os.Getwd()
 	defer os.Chdir(wd)
 
-	os.Chdir("../../systest")
+	os.Chdir("../systest")
 	Build("sp.yaml", "/tmp/sp.spm")
 }
 

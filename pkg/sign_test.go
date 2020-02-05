@@ -25,11 +25,11 @@ func TestGenerateKeysWithPassphrase(t *testing.T) {
 
 func TestLoadPrivateKeyfile(t *testing.T) {
 	t.Log("Testing Loading private pem files")
-	privkey, err := LoadPrivateKey("../../tests/private.pem")
+	privkey, err := LoadPrivateKey("../tests/private.pem")
 	if err == nil {
 		showPrivateKey(privkey)
 	}
-	privkey, _ = LoadPrivateKey("../../tests/private_missing.pem")
+	privkey, _ = LoadPrivateKey("../tests/private_missing.pem")
 
 }
 
@@ -43,20 +43,29 @@ func TestLoadPrivateKeyfileWithPassphrase(t *testing.T) {
 }
 
 func TestSignFile(t *testing.T) {
-	err := SignFile("sign.go", "/tmp/sign.go.sig", "../../tests/private.pem")
+	SignFile("sign_test.go", "/tmp/sign_test1.go.sig", "../tests/bad_private.pem")
+	SignFile("sign_test.go", "/tmp/sign_test2.go.sig", "../tests/bad_private.pem")
+
+	err := SignFile("sign.go", "/tmp/sign.go.sig", "../tests/private.pem")
 	if err == nil {
 		log.Printf("Signed\n")
 	}
-	err = SignFile("sign_test.go", "/tmp/sign_test.go.sig", "../../tests/private.pem")
+	err = SignFile("sign_test.go", "/tmp/sign_test.go.sig", "../tests/private.pem")
 	if err == nil {
 		log.Printf("Signed\n")
 	}
-	SignFile("sign_test.go", "/tmp/sign_test1.go.sig", "../../tests/bad_private.pem")
-	SignFile("sign_test.go", "/tmp/sign_test2.go.sig", "../../tests/bad_private.pem")
+
 }
 
 func TestSign(t *testing.T) {
-	keyfile, err := LoadPrivateKey("../../tests/private.pem")
+	t.Run("Null arg for privatekey", func(t *testing.T) {
+		err := Sign("sign_test.go", "/tmp/tests/sign_test.go.sig", nil)
+		if err == nil {
+			log.Printf("Signed\n")
+		}
+	})
+
+	keyfile, err := LoadPrivateKey("../tests/private.pem")
 	if err != nil {
 		log.Panic(err)
 	}
@@ -68,10 +77,7 @@ func TestSign(t *testing.T) {
 	if err == nil {
 		log.Printf("Signed\n")
 	}
-	err = Sign("sign_test.go", "/tmp/tests/sign_test.go.sig", nil)
-	if err == nil {
-		log.Printf("Signed\n")
-	}
+
 }
 
 func TestSignWithPassphrase(t *testing.T) {

@@ -7,6 +7,7 @@ import (
 	"crypto/sha256"
 	"crypto/x509"
 	"encoding/pem"
+	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -210,7 +211,8 @@ func fileHash(file string) ([]byte, error) {
 
 func Sign(file string, sigfile string, pvt *rsa.PrivateKey) error {
 	if pvt == nil {
-		log.Fatal("No private key provided")
+		log.Printf("No private key provided")
+		return errors.New("No private key provided")
 	}
 	log.Printf("Signing %s creating %s\n", file, sigfile)
 	datahash, _ := fileHash(file)
